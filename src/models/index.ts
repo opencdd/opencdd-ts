@@ -76,3 +76,4 @@ export {
 export * as MetaClass from "./MetaClass";
 export { Languages } from "./Languages";
 export { VersionHistory, type VersionHistoryEntry } from "./VersionHistory";
+export * from "./jsonTypes";
