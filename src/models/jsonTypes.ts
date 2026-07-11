@@ -66,6 +66,11 @@ export interface EntityMetadata {
   dates?: EntityDates;
   raw_properties?: Record<string, unknown>;
   version_history?: VersionHistoryEntry[];
+  status_level?: string;
+  publisher?: string;
+  published_in?: string;
+  responsible_committee?: string;
+  change_request_id?: string;
 }
 
 export interface BaseNode extends EntityMetadata {
