@@ -82,7 +82,18 @@ function emitAliasDecl(decl: AliasDecl): string[] {
 }
 
 function emitImportDecl(decl: ImportDecl): string[] {
-  return [`import ${quoteString(decl.url)}`];
+  if (decl.kind === "selective") {
+    const names = decl.importedNames
+      .map((n) =>
+        n.localName === n.name ? n.name : `${n.name} as ${n.localName}`,
+      )
+      .join(", ");
+    return [`from ${quoteString(decl.specifier)} import { ${names} }`];
+  }
+  if (decl.kind === "qualified") {
+    return [`import ${quoteString(decl.specifier)} as ${decl.qualifier}`];
+  }
+  return [`import ${quoteString(decl.specifier)}`];
 }
 
 export function emitValue(value: ValueNode): string {

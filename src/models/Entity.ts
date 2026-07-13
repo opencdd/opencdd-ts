@@ -10,6 +10,11 @@ export interface Dates {
   currentRevision: string | undefined;
 }
 
+export interface SourceLocation {
+  readonly file: string | null;
+  readonly line: number | null;
+}
+
 export interface EntityJSON {
   irdi: string | null;
   metaClassIrdi: string | null;
@@ -32,6 +37,7 @@ export abstract class Entity {
   private readonly cachedType: EntityType | undefined;
   private versionHistoryValue: VersionHistory;
   private languagesValue: Languages;
+  sourceLocation: SourceLocation | null = null;
 
   constructor(
     irdi: IRDI | null,
@@ -58,6 +64,11 @@ export abstract class Entity {
     return this;
   }
 
+  attachSourceLocation(loc: SourceLocation): this {
+    this.sourceLocation = loc;
+    return this;
+  }
+
   get irdi(): IRDI | null {
     return this.mutableIrdi;
   }
@@ -68,7 +79,8 @@ export abstract class Entity {
    * call this — entities are otherwise identity-stable.
    */
   replaceIrdi(newIrdi: IRDI | string): this {
-    this.mutableIrdi = typeof newIrdi === "string" ? IRDI.parse(newIrdi) : newIrdi;
+    this.mutableIrdi =
+      typeof newIrdi === "string" ? IRDI.parse(newIrdi) : newIrdi;
     return this;
   }
 
@@ -184,6 +196,8 @@ export abstract class Entity {
   }
 
   protected language(baseId: string, lang: string): string | undefined {
-    return this.getString(`${baseId}.${lang}`) ?? this.getString(`${baseId}.en`);
+    return (
+      this.getString(`${baseId}.${lang}`) ?? this.getString(`${baseId}.en`)
+    );
   }
 }

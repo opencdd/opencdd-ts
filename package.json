@@ -50,6 +50,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
+    "@types/node": "^20.19.43",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

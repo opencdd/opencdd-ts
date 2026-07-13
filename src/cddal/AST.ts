@@ -80,9 +80,19 @@ export interface AliasDecl {
   readonly line: number;
 }
 
+export type ImportKind = "bare" | "qualified" | "selective";
+
+export interface ImportedName {
+  readonly name: string;
+  readonly localName: string;
+}
+
 export interface ImportDecl {
   readonly node: "import_decl";
-  readonly url: string;
+  readonly specifier: string;
+  readonly kind: ImportKind;
+  readonly qualifier: string | null;
+  readonly importedNames: readonly ImportedName[];
   readonly line: number;
 }
 
@@ -97,7 +107,10 @@ export function literal(kind: LiteralKind, raw: string): Literal {
   return { node: "literal", kind, raw };
 }
 
-export function identifierRef(name: string, owner: string | null = null): IdentifierRef {
+export function identifierRef(
+  name: string,
+  owner: string | null = null,
+): IdentifierRef {
   return { node: "identifier_ref", name, owner };
 }
 
@@ -109,11 +122,18 @@ export function tupleNode(elements: readonly ValueNode[]): TupleNode {
   return { node: "tuple", elements };
 }
 
-export function classReference(typeName: string, argument: ValueNode): ClassReferenceNode {
+export function classReference(
+  typeName: string,
+  argument: ValueNode,
+): ClassReferenceNode {
   return { node: "class_reference", typeName, argument };
 }
 
-export function condition(left: string, operator: "==" | "!=", right: ValueNode): ConditionNode {
+export function condition(
+  left: string,
+  operator: "==" | "!=",
+  right: ValueNode,
+): ConditionNode {
   return { node: "condition", left, operator, right };
 }
 
@@ -124,6 +144,47 @@ export function propertyAssignment(
   line: number,
 ): PropertyAssignment {
   return { identifier, languageTag, value, line };
+}
+
+export function importBare(specifier: string, line: number): ImportDecl {
+  return {
+    node: "import_decl",
+    specifier,
+    kind: "bare",
+    qualifier: null,
+    importedNames: [],
+    line,
+  };
+}
+
+export function importQualified(
+  specifier: string,
+  qualifier: string,
+  line: number,
+): ImportDecl {
+  return {
+    node: "import_decl",
+    specifier,
+    kind: "qualified",
+    qualifier,
+    importedNames: [],
+    line,
+  };
+}
+
+export function importSelective(
+  specifier: string,
+  importedNames: readonly ImportedName[],
+  line: number,
+): ImportDecl {
+  return {
+    node: "import_decl",
+    specifier,
+    kind: "selective",
+    qualifier: null,
+    importedNames,
+    line,
+  };
 }
 
 export function documentOf(declarations: readonly Declaration[]): Document {

@@ -16,6 +16,7 @@ import type {
   Declaration,
   Document,
   ImportDecl,
+  ImportedName,
   InstanceDecl,
   MetaClassDecl,
   PropertyAssignment,
@@ -53,6 +54,7 @@ export class Parser {
     if (this.at("INSTANCE")) return this.parseInstanceDecl();
     if (this.at("ALIAS")) return this.parseAliasDecl();
     if (this.at("IMPORT")) return this.parseImportDecl();
+    if (this.peekIdent("from")) return this.parseImportDecl();
     throw this.unexpected("declaration");
   }
 
@@ -145,13 +147,54 @@ export class Parser {
   }
 
   private parseImportDecl(): ImportDecl {
+    if (this.peekIdent("from")) {
+      return this.parseSelectiveImport();
+    }
     const start = this.expect("IMPORT");
-    const url = this.expect("STRING").value;
-    return {
-      node: "import_decl",
-      url,
-      line: start.line,
-    };
+    if (this.peekIdent("from")) {
+      this.pos -= 1;
+      return this.parseSelectiveImport();
+    }
+    const specifier = this.expect("STRING").value;
+    if (this.peekIdent("as")) {
+      this.advance();
+      const qualifier = this.expectIdent();
+      return AST.importQualified(specifier, qualifier, start.line);
+    }
+    return AST.importBare(specifier, start.line);
+  }
+
+  private parseSelectiveImport(): ImportDecl {
+    const start = this.expect("IDENT");
+    if (start.value !== "from") {
+      throw this.unexpected("from");
+    }
+    const specifier = this.expect("STRING").value;
+    if (!this.peekKeyword("import")) {
+      throw this.unexpected("import");
+    }
+    this.advance();
+    this.expect("LBRACE");
+    const names: ImportedName[] = [];
+    if (!this.at("RBRACE")) {
+      names.push(this.parseImportedName());
+      while (this.at("COMMA")) {
+        this.advance();
+        names.push(this.parseImportedName());
+      }
+    }
+    this.expect("RBRACE");
+    return AST.importSelective(specifier, names, start.line);
+  }
+
+  private parseImportedName(): ImportedName {
+    const name = this.expectIdent();
+    if (this.peekIdent("as")) {
+      this.advance();
+      const localName = this.expectIdent();
+      return { name, localName };
+    }
+    return { name, localName: name };
   }
 
   private parseIdentOrIrdi(): string {
@@ -327,13 +370,33 @@ export class Parser {
     }
   }
 
-  private expectIdent(): string {
+  private expectIdent(expected?: string): string {
     const tok = this.peek();
     if (tok.kind !== "IDENT") {
-      throw this.unexpected("IDENT");
+      throw this.unexpected(expected ?? "IDENT");
+    }
+    if (expected !== undefined && tok.value !== expected) {
+      throw this.unexpected(expected);
     }
     this.advance();
     return tok.value;
+  }
+
+  private peekIdent(value: string): boolean {
+    const tok = this.peek();
+    return tok.kind === "IDENT" && tok.value === value;
+  }
+
+  private peekKeyword(value: string): boolean {
+    const tok = this.peek();
+    return (
+      tok.value === value &&
+      (tok.kind === "IDENT" ||
+        tok.kind === "IMPORT" ||
+        tok.kind === "INSTANCE" ||
+        tok.kind === "ALIAS" ||
+        tok.kind === "META_CLASS")
+    );
   }
 
   private expect(kind: TokenKind): Token {
