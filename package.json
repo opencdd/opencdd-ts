@@ -1,16 +1,16 @@
 {
-  "name": "@opencdd/models",
-  "version": "0.2.0",
-  "description": "TypeScript value-object layer + validators for OpenCDD CDD — shared between browser and editor.",
+  "name": "@opencdd/opencdd",
+  "version": "0.3.0",
+  "description": "TypeScript port of the Ruby opencdd gem — read CDD data, output CDDAL.",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/opencdd/cdd-models-ts.git"
+    "url": "git+https://github.com/opencdd/opencdd-ts.git"
   },
-  "homepage": "https://github.com/opencdd/cdd-models-ts",
+  "homepage": "https://github.com/opencdd/opencdd-ts",
   "bugs": {
-    "url": "https://github.com/opencdd/cdd-models-ts/issues"
+    "url": "https://github.com/opencdd/opencdd-ts/issues"
   },
   "keywords": [
     "cdd",

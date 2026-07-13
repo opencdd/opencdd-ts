@@ -5,11 +5,11 @@ with code in this repository.
 
 ## What this repository is
 
-`@opencdd/models` — the TypeScript value-object layer + validators for
-OpenCDD CDD. Shared between the
+`@opencdd/opencdd` — the TypeScript port of the Ruby
+[`opencdd`](https://github.com/opencdd/opencdd-ruby) gem. Reads CDD
+data (CDDAL + YAML) and outputs CDDAL. Shared between the
 [OpenCDD Browser](https://github.com/opencdd/opencdd.github.io) and the
-OpenCDD Editor. A TypeScript port of the canonical Ruby `cdd` gem's
-model + validator surface.
+OpenCDD Editor.
 
 See
 [`opencdd/opencdd.github.io` TODO.astro/00](https://github.com/opencdd/opencdd.github.io/blob/main/TODO.astro/00-architecture-and-decisions.md)
@@ -63,8 +63,8 @@ Package-specific:
 Trusted publishing via GitHub OIDC:
 
 1. **npm side (one-time)**: configure
-   `@opencdd/models` to accept GitHub Actions OIDC tokens from
-   `opencdd/cdd-models-ts` `.github/workflows/release.yml`. Done in
+   `@opencdd/opencdd` to accept GitHub Actions OIDC tokens from
+   `opencdd/opencdd-ts` `.github/workflows/release.yml`. Done in
    the npm web UI by the package owner.
 2. **GitHub side**: the publish workflow (`.github/workflows/release.yml`)
    has `id-token: write` permission and runs

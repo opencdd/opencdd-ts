@@ -1,5 +1,5 @@
 /**
- * @opencdd/models — public entry point.
+ * @opencdd/opencdd — public entry point.
  *
  * Re-exports the model layer, validators, CDDAL parser/serializer,
  * Parcel sheet schema, and exporters. A few symbols are exported
