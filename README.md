@@ -1,6 +1,6 @@
-# @opencdd/models
+# @opencdd/opencdd
 
-TypeScript value-object layer + validators for [OpenCDD](https://github.com/opencdd) CDD. The shared model layer between the [OpenCDD Browser](https://github.com/opencdd/opencdd.github.io) and the [OpenCDD Editor](https://github.com/opencdd/editor). A TypeScript port of the canonical Ruby `cdd` gem's model + validator surface.
+TypeScript port of the canonical Ruby [`opencdd`](https://github.com/opencdd/opencdd-ruby) gem — reads CDD data (CDDAL + YAML) and outputs CDDAL. Shared model layer between the [OpenCDD Browser](https://github.com/opencdd/opencdd.github.io) and the [OpenCDD Editor](https://github.com/opencdd/editor).
 
 ## What's in here
 
@@ -16,13 +16,18 @@ TypeScript value-object layer + validators for [OpenCDD](https://github.com/open
 ## Install
 
 ```bash
-npm install @opencdd/models
+npm install @opencdd/opencdd
 ```
 
 ## Quick example
 
 ```ts
-import { Klass, Property, Database, ENTITY_CONSTRUCTORS } from "@opencdd/models";
+import {
+  Klass,
+  Property,
+  Database,
+  ENTITY_CONSTRUCTORS,
+} from "@opencdd/opencdd";
 
 const klass = new Klass({
   irdi: "0112/2///61360_4#AAA001",
@@ -39,7 +44,7 @@ console.log(db.classes.size); // 1
 
 ## Codegen provenance
 
-`src/models/PropertyIds.generated.ts` and `src/models/MetaClasses.generated.ts` are **generated** by the Ruby `cdd` gem's `rake generate_ts` task, which writes them into this repo via a git submodule of `cdd-data`. Do not hand-edit. See [`TODO.astro/02`](https://github.com/opencdd/opencdd.github.io/blob/main/TODO.astro/02-cdd-data-submodule-and-codegen.md) for the codegen contract.
+`src/models/PropertyIds.generated.ts` and `src/models/MetaClasses.generated.ts` are **generated** by the Ruby `opencdd` gem's `rake generate_ts` task, which writes them into this repo via a git submodule of `cdd-data`. Do not hand-edit. See [`TODO.astro/02`](https://github.com/opencdd/opencdd.github.io/blob/main/TODO.astro/02-cdd-data-submodule-and-codegen.md) for the codegen contract.
 
 ## Versioning
 
