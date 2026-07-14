@@ -1,6 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { Languages } from "../src/models/Languages";
-import { VersionHistory, type VersionHistoryEntry } from "../src/models/VersionHistory";
+import {
+  VersionHistory,
+  type VersionHistoryEntry,
+} from "../src/models/VersionHistory";
 
 describe("Languages", () => {
   it("constructs with source + translations", () => {
@@ -33,7 +36,7 @@ describe("Languages", () => {
       "MDC_P004.de": "Allgemeine Daten",
       "MDC_P004.fr": "Données",
       "MDC_P006.en": "definition",
-      "MDC_P011": "ITEM_CLASS",
+      MDC_P011: "ITEM_CLASS",
     };
     const langs = Languages.fromProperties(props);
     expect(langs.source).toBe("en");
@@ -51,9 +54,36 @@ describe("Languages", () => {
 
 describe("VersionHistory", () => {
   const entries: VersionHistoryEntry[] = [
-    { version: "001", revision: "04", status: "standard", timestamp: "2023-04-17", user: "BATCH", changeRequestId: null, unid: "ABC", isCurrent: true },
-    { version: "001", revision: "03", status: "superseded", timestamp: "2015-01-20", user: "BATCH2", changeRequestId: null, unid: "DEF", isCurrent: false },
-    { version: "001", revision: "02", status: "superseded", timestamp: "2012-06-15", user: "BATCH3", changeRequestId: null, unid: "GHI", isCurrent: false },
+    {
+      version: "001",
+      revision: "04",
+      status: "standard",
+      timestamp: "2023-04-17",
+      user: "BATCH",
+      changeRequestId: null,
+      unid: "ABC",
+      isCurrent: true,
+    },
+    {
+      version: "001",
+      revision: "03",
+      status: "superseded",
+      timestamp: "2015-01-20",
+      user: "BATCH2",
+      changeRequestId: null,
+      unid: "DEF",
+      isCurrent: false,
+    },
+    {
+      version: "001",
+      revision: "02",
+      status: "superseded",
+      timestamp: "2012-06-15",
+      user: "BATCH3",
+      changeRequestId: null,
+      unid: "GHI",
+      isCurrent: false,
+    },
   ];
 
   it("constructs with entries", () => {

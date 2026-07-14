@@ -37,11 +37,13 @@ export interface ValidationError {
   readonly message: string;
 }
 
-export function validationError(partial: Omit<ValidationError, "sheet" | "row" | "column"> & {
-  sheet?: string | null;
-  row?: string | null;
-  column?: string | null;
-}): ValidationError {
+export function validationError(
+  partial: Omit<ValidationError, "sheet" | "row" | "column"> & {
+    sheet?: string | null;
+    row?: string | null;
+    column?: string | null;
+  },
+): ValidationError {
   return Object.freeze({
     sheet: partial.sheet ?? null,
     row: partial.row ?? null,

@@ -2,22 +2,23 @@ import { Entity } from "./Entity";
 import { IRDI } from "./IRDI";
 import * as Pids from "./PropertyIds.generated";
 import { parseIrdiList } from "./helpers";
+import { RelationType } from "./RelationType";
 
 /**
  * A CDD Relation entity (IEC 61360 meta-class MDC_C011).
- * Ported from Cdd::Relation (lib/cdd/relation.rb).
+ * Ported from Opencdd::Relation (lib/opencdd/relation.rb).
  */
 export class Relation extends Entity {
-  get relationType(): string | undefined {
-    return this.getString(Pids.MDC_P200);
+  get relationType(): RelationType | undefined {
+    return RelationType.parse(this.getString(Pids.MDC_P200)) ?? undefined;
   }
 
   get isPredication(): boolean {
-    return this.relationType?.toUpperCase() === "PREDICATION";
+    return this.relationType?.predication ?? false;
   }
 
   get isFunction(): boolean {
-    return this.relationType?.toUpperCase() === "FUNCTION";
+    return this.relationType?.function ?? false;
   }
 
   get domainIrdis(): IRDI[] {

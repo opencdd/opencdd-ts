@@ -3,6 +3,7 @@ import * as Pids from "./PropertyIds.generated";
 import { entityTypeFor, type EntityType } from "./MetaClasses.generated";
 import { Languages } from "./Languages";
 import { VersionHistory, type VersionHistoryEntry } from "./VersionHistory";
+import { fieldFor } from "./FieldRegistry";
 
 export interface Dates {
   originalDefinition: string | undefined;
@@ -120,6 +121,27 @@ export abstract class Entity {
 
   preferredName(lang = "en"): string | undefined {
     return this.language(Pids.MDC_P004, lang);
+  }
+
+  /**
+   * Generic field reader via the FieldRegistry. Returns the raw stored
+   * value for the named semantic field, optionally with a language tag
+   * for multilingual fields. For typed coercion (ClassType, RelationType,
+   * etc.), use the per-subclass getter — the registry is the SSOT for
+   * the wire ID + multilingual flag, not the type coercion.
+   *
+   *   entity.field<string>("unit_text")           // → string | undefined
+   *   entity.field<string>("preferred_name", "fr") // → French label
+   */
+  field<T = unknown>(name: string, lang?: string): T | undefined {
+    if (!this.type) return undefined;
+    const spec = fieldFor(this.type, name);
+    if (!spec) return undefined;
+    const key =
+      spec.valueKind === "ml_string" && lang
+        ? `${spec.propertyId}.${lang}`
+        : spec.propertyId;
+    return this.properties.get(key) as T | undefined;
   }
 
   shortName(lang = "en"): string | undefined {

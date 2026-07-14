@@ -45,14 +45,19 @@ export function compositionHierarchyAcyclic(database: Database): boolean {
   return true;
 }
 
-function hasCycleFrom(klass: Klass | null, database: Database, seen: string[]): boolean {
+function hasCycleFrom(
+  klass: Klass | null,
+  database: Database,
+  seen: string[],
+): boolean {
   if (klass === null) return false;
   const code = klass.code;
   if (code && seen.includes(code)) return true;
   if (!code) return false;
   const parentIrdi = klass.parentIrdi;
   if (!parentIrdi) return false;
-  const parent = database.find(parentIrdi) ?? database.findByCode(parentIrdi.code);
+  const parent =
+    database.find(parentIrdi) ?? database.findByCode(parentIrdi.code);
   if (!(parent instanceof Klass)) return false;
   return hasCycleFrom(parent, database, [...seen, code]);
 }

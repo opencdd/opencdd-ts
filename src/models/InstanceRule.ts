@@ -44,7 +44,10 @@ export class InstanceRule {
     const values = group.valuesByProperty;
     const propertyIds = Object.keys(values);
     if (propertyIds.length === 0) return [];
-    const length = propertyIds.reduce((max, pid) => Math.max(max, values[pid].length), 0);
+    const length = propertyIds.reduce(
+      (max, pid) => Math.max(max, values[pid].length),
+      0,
+    );
     const rows: InstanceRow[] = [];
     for (let i = 0; i < length; i++) {
       const row: InstanceRow = {};
@@ -63,7 +66,9 @@ export class InstanceRule {
     if (this.exceptions.length === 0) return false;
     const groupName = String(row[GROUP_NAME_KEY] ?? "");
     const lineId = String(row[LINE_ID_KEY] ?? "");
-    return this.exceptions.some((ex) => ex.groupName === groupName && ex.lineId === lineId);
+    return this.exceptions.some(
+      (ex) => ex.groupName === groupName && ex.lineId === lineId,
+    );
   }
 
   private stripInternal(row: InstanceRow): InstanceRow {

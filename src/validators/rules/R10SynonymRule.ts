@@ -15,10 +15,7 @@ export class R10SynonymRule implements Rule {
   readonly ruleId = "R10";
 
   applies(ctx: ValidationContext): boolean {
-    return (
-      ctx.columnIri === Pids.MDC_P004_2 ||
-      ctx.columnIri === Pids.MDC_P007
-    );
+    return ctx.columnIri === Pids.MDC_P004_2 || ctx.columnIri === Pids.MDC_P007;
   }
 
   call(value: unknown): boolean {
@@ -27,7 +24,10 @@ export class R10SynonymRule implements Rule {
     if (!s.startsWith("{") || !s.endsWith("}")) return false;
     const body = s.slice(1, -1).trim();
     if (body.length === 0) return true;
-    const tuples = body.split(/\)\s*,\s*/).map((t) => t.trim()).filter((t) => t.length > 0);
+    const tuples = body
+      .split(/\)\s*,\s*/)
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
     return tuples.every((t) => t.startsWith("("));
   }
 

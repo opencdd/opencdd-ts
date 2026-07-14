@@ -2,7 +2,10 @@ import { ParcelMetadata } from "./Metadata";
 import { SheetSchema, type SheetColumn } from "./SheetSchema";
 import { canonicalParcelId } from "./canonicalParcelId";
 import { REGISTRY as PID_REGISTRY } from "../models/PropertyIds.generated";
-import { REGISTRY as META_REGISTRY, codePropertyIdFor as metaCodePropertyIdFor } from "../models/MetaClasses.generated";
+import {
+  REGISTRY as META_REGISTRY,
+  codePropertyIdFor as metaCodePropertyIdFor,
+} from "../models/MetaClasses.generated";
 
 const DEFAULT_REQUIREMENT_FOR_CODE = "KEY";
 const DEFAULT_REQUIREMENT_OTHER = "OPT";
@@ -48,12 +51,15 @@ export class Sheet {
     if (!meta) throw new Error(`unknown meta-class ${params.metaClassIrdi}`);
 
     const codePropertyId = metaCodePropertyIdFor(meta.irdi);
-    const languages = Array.from(new Set([sourceLanguage, ...translationLanguages]));
+    const languages = Array.from(
+      new Set([sourceLanguage, ...translationLanguages]),
+    );
 
     const schema = new SheetSchema();
     meta.allowedPropertyIds.forEach((propertyId, idx) => {
       const nameByLang: Record<string, string> = {};
-      for (const lang of languages) nameByLang[lang] = Sheet.displayNameFor(propertyId, lang);
+      for (const lang of languages)
+        nameByLang[lang] = Sheet.displayNameFor(propertyId, lang);
       schema.addColumn({
         index: idx + 1,
         propertyId,
@@ -64,7 +70,10 @@ export class Sheet {
         datatype: Sheet.defaultDatatypeFor(propertyId),
         valueFormat: undefined,
         pattern: undefined,
-        requirement: propertyId === codePropertyId ? DEFAULT_REQUIREMENT_FOR_CODE : DEFAULT_REQUIREMENT_OTHER,
+        requirement:
+          propertyId === codePropertyId
+            ? DEFAULT_REQUIREMENT_FOR_CODE
+            : DEFAULT_REQUIREMENT_OTHER,
       });
     });
 
@@ -73,10 +82,13 @@ export class Sheet {
     metadata.add(`#CLASS_NAME.${sourceLanguage} := ${meta.name}`);
     metadata.add(`#SOURCE_LANGUAGE := ${sourceLanguage}`);
     if (translationLanguages.length > 0) {
-      metadata.add(`#TRANSLATION_LANGUAGE := ${translationLanguages.join(",")}`);
+      metadata.add(
+        `#TRANSLATION_LANGUAGE := ${translationLanguages.join(",")}`,
+      );
     }
 
-    const name = params.sheetName ?? `${params.parcelId}_${meta.name.toUpperCase()}`;
+    const name =
+      params.sheetName ?? `${params.parcelId}_${meta.name.toUpperCase()}`;
     return new Sheet({ name, metadata, schema, rawRows: [] });
   }
 
@@ -137,7 +149,10 @@ export class Sheet {
     return false;
   }
 
-  private static buildRows(rawRows: readonly RawRow[], schema: SheetSchema): InstanceRow[] {
+  private static buildRows(
+    rawRows: readonly RawRow[],
+    schema: SheetSchema,
+  ): InstanceRow[] {
     const out: InstanceRow[] = [];
     rawRows.forEach((raw, resultIdx) => {
       const instance = Sheet.buildInstance(raw, schema);
@@ -148,7 +163,10 @@ export class Sheet {
     return out;
   }
 
-  private static buildInstance(row: RawRow, schema: SheetSchema): InstanceRow | null {
+  private static buildInstance(
+    row: RawRow,
+    schema: SheetSchema,
+  ): InstanceRow | null {
     const h: InstanceRow = {};
     let anyValue = false;
     schema.each((col) => {

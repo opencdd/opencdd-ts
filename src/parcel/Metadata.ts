@@ -1,5 +1,8 @@
 import { IRDI } from "../models/IRDI";
-import { entityTypeFor, type EntityType } from "../models/MetaClasses.generated";
+import {
+  entityTypeFor,
+  type EntityType,
+} from "../models/MetaClasses.generated";
 
 const DIRECTIVE_REGEX = /^#([^:=\s]+)\s*:=\s*(.*)$/;
 
@@ -42,7 +45,8 @@ export class ParcelMetadata {
   }
 
   get metaClassIrdi(): IRDI | null {
-    if (this.metaClassRaw === null || this.metaClassRaw.length === 0) return null;
+    if (this.metaClassRaw === null || this.metaClassRaw.length === 0)
+      return null;
     return IRDI.parse(this.synthesizeMetaClassIrdi());
   }
 

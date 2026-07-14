@@ -19,7 +19,9 @@ export class ValueFormat {
 
   constructor(opts: ValueFormatOptions) {
     if (!CODES.has(opts.code)) {
-      throw new TypeError(`unknown value_format code: ${JSON.stringify(opts.code)}`);
+      throw new TypeError(
+        `unknown value_format code: ${JSON.stringify(opts.code)}`,
+      );
     }
     this.code = opts.code;
     this.signed = opts.signed ?? false;
@@ -28,8 +30,12 @@ export class ValueFormat {
     Object.freeze(this);
   }
 
-  get numeric(): boolean { return this.code !== "M"; }
-  get string(): boolean { return this.code === "M"; }
+  get numeric(): boolean {
+    return this.code !== "M";
+  }
+  get string(): boolean {
+    return this.code === "M";
+  }
 
   toString(): string {
     if (this.code === "M") {

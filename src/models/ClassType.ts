@@ -1,8 +1,5 @@
 export type ClassTypeValue =
-  | "ITEM_CLASS"
-  | "CATEGORICAL_CLASS"
-  | "VALUE_CLASS"
-  | "MESSAGE_CLASS";
+  "ITEM_CLASS" | "CATEGORICAL_CLASS" | "VALUE_CLASS" | "MESSAGE_CLASS";
 
 const VALUES: ReadonlySet<ClassTypeValue> = new Set([
   "ITEM_CLASS",

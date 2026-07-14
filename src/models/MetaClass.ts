@@ -39,10 +39,18 @@ export function codes(): readonly string[] {
   return Object.keys(REGISTRY);
 }
 
-export function allowsProperty(metaClassIrdi: string, propertyId: string): boolean {
-  return REGISTRY[metaClassIrdi]?.allowedPropertyIds.includes(propertyId) ?? false;
+export function allowsProperty(
+  metaClassIrdi: string,
+  propertyId: string,
+): boolean {
+  return (
+    REGISTRY[metaClassIrdi]?.allowedPropertyIds.includes(propertyId) ?? false
+  );
 }
 
-export function allowsPropertyEntry(meta: MetaClassEntry, propertyId: string): boolean {
+export function allowsPropertyEntry(
+  meta: MetaClassEntry,
+  propertyId: string,
+): boolean {
   return meta.allowedPropertyIds.includes(propertyId);
 }

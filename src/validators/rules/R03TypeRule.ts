@@ -5,9 +5,11 @@ import { isEmpty, rubyInspect } from "./shared";
 type Predicate = (value: unknown) => boolean;
 
 const SIMPLE_PREDICATES: Readonly<Record<string, Predicate>> = {
-  BOOLEAN_TYPE: (v) => ["true", "false"].includes(String(v).toLowerCase().trim()),
+  BOOLEAN_TYPE: (v) =>
+    ["true", "false"].includes(String(v).toLowerCase().trim()),
   STRING_TYPE: (v) => typeof v === "string" || v !== null,
-  TRANSLATABLE_STRING_TYPE: (v) => typeof v === "string" || isStructuredPairs(v),
+  TRANSLATABLE_STRING_TYPE: (v) =>
+    typeof v === "string" || isStructuredPairs(v),
   IRDI_TYPE: (v) => IRDI.parse(String(v)) !== null,
   IRDI_STRING_TYPE: (v) => IRDI.parse(String(v)) !== null,
   ICID_STRING: (v) => IRDI.parse(String(v)) !== null,

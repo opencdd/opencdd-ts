@@ -2,11 +2,20 @@ export { IRDI } from "./IRDI";
 export { Entity, type EntityJSON, type Dates } from "./Entity";
 export { Klass } from "./Klass";
 export { ClassType, type ClassTypeValue } from "./ClassType";
+export { RelationType, type RelationTypeValue } from "./RelationType";
+export {
+  FIELDS,
+  fieldFor,
+  fieldsForType,
+  type FieldSpec,
+  type FieldValueKind,
+} from "./FieldRegistry";
 export { Property, DATA_TYPE_ALIASES } from "./Property";
 export { Unit } from "./Unit";
 export { ValueList, LIST_TYPE_ALIASES } from "./ValueList";
 export { ValueTerm } from "./ValueTerm";
 export { Relation } from "./Relation";
+export { Visitor } from "./Visitor";
 export { ViewControl } from "./ViewControl";
 export {
   DataType,
@@ -19,9 +28,18 @@ export {
   type DataTypeKind,
 } from "./DataType";
 export { entityFromJSON, entityToJSON } from "./factory";
-export { ENTITY_CONSTRUCTORS, entityConstructorFor, type EntityConstructor } from "./entityConstructors";
+export {
+  ENTITY_CONSTRUCTORS,
+  entityConstructorFor,
+  type EntityConstructor,
+} from "./entityConstructors";
 export { parseIrdiList, parseStringList, parseIntegerList } from "./helpers";
-export { Condition, ConditionSyntaxError, type ConditionOperator, type ConditionRhs } from "./Condition";
+export {
+  Condition,
+  ConditionSyntaxError,
+  type ConditionOperator,
+  type ConditionRhs,
+} from "./Condition";
 export {
   PropertyDataTypeElement,
   type PropertyDataElementTypeValue,
@@ -36,7 +54,10 @@ export {
   setOfRefsPropertyIds,
 } from "./referenceKinds";
 export { generateGuid, isValidGuid, setGuidOn } from "./Guid";
-export { EffectiveProperties, type EffectivePropertiesResult } from "./EffectiveProperties";
+export {
+  EffectiveProperties,
+  type EffectivePropertiesResult,
+} from "./EffectiveProperties";
 export {
   ClassTree,
   type ClassTreeField,

@@ -13,14 +13,24 @@ export class RelationTree {
 
   constructor(readonly database: Database) {}
 
-  for(root: Relation | IRDI | string | null = null, maxDepth = 10): RelationTreeNode[] {
-    const roots = root === null ? this.rootRelations() : [this.lookupRelation(root)].filter((r): r is Relation => r !== null);
+  for(
+    root: Relation | IRDI | string | null = null,
+    maxDepth = 10,
+  ): RelationTreeNode[] {
+    const roots =
+      root === null
+        ? this.rootRelations()
+        : [this.lookupRelation(root)].filter((r): r is Relation => r !== null);
     return roots
       .map((r) => this.buildNode(r, new Set<string>(), maxDepth))
       .filter((n): n is RelationTreeNode => n !== null);
   }
 
-  private buildNode(relation: Relation, path: Set<string>, maxDepth: number): RelationTreeNode | null {
+  private buildNode(
+    relation: Relation,
+    path: Set<string>,
+    maxDepth: number,
+  ): RelationTreeNode | null {
     if (maxDepth <= 0) return null;
     const key = relation.irdi?.toString();
     if (key !== undefined && path.has(key)) return null;
@@ -40,12 +50,16 @@ export class RelationTree {
   }
 
   private rootRelations(): Relation[] {
-    return this.database.relations().filter((r) => r.superRelationIrdi === null);
+    return this.database
+      .relations()
+      .filter((r) => r.superRelationIrdi === null);
   }
 
   private lookupRelation(ref: Relation | IRDI | string): Relation | null {
     if (ref instanceof Relation) return ref;
-    const entity = this.database.resolveReference(ref instanceof IRDI ? ref.toString() : ref);
+    const entity = this.database.resolveReference(
+      ref instanceof IRDI ? ref.toString() : ref,
+    );
     return entity instanceof Relation ? entity : null;
   }
 

@@ -3,6 +3,7 @@ export { Parser, ParseError } from "./Parser";
 export { astToCddal, emitValue, quoteString } from "./Serializer";
 export { Builder, type BuildResult, type BuilderOptions } from "./Builder";
 export { DatabaseSerializer } from "./DatabaseSerializer";
+export { serializeValue, serializeIdentifierRef } from "./ValueSerializer";
 export {
   Cddal,
   type ParseOptions,

@@ -1,7 +1,8 @@
 import type { Rule, ValidationContext } from "../Rule";
 import { isEmpty, rubyInspect } from "./shared";
 
-const TOKEN_PATTERN = /^(?<type>NR1|NR2|NR3|M|B|Date|DT|Bool)(?:\s+(?<sign>S|U))?(?:\.\.(?<width>\d+))?(?:\.(?<decimals>\d+))?$/;
+const TOKEN_PATTERN =
+  /^(?<type>NR1|NR2|NR3|M|B|Date|DT|Bool)(?:\s+(?<sign>S|U))?(?:\.\.(?<width>\d+))?(?:\.(?<decimals>\d+))?$/;
 
 export class R05FormatRule implements Rule {
   readonly ruleId = "R05";
@@ -22,18 +23,31 @@ export class R05FormatRule implements Rule {
   }
 }
 
-function typeCheck(value: unknown, groups: { type: string; width?: string }): boolean {
+function typeCheck(
+  value: unknown,
+  groups: { type: string; width?: string },
+): boolean {
   const width = groups.width ? parseInt(groups.width, 10) : undefined;
   const s = String(value);
   switch (groups.type) {
-    case "NR1": return Number.isInteger(Number(s));
+    case "NR1":
+      return Number.isInteger(Number(s));
     case "NR2":
-    case "NR3": return !Number.isNaN(parseFloat(s));
-    case "M": return s.length <= (width ?? 255);
-    case "B": return /^[01]+$/.test(s) && s.length <= (width ?? 8);
-    case "Date": return !Number.isNaN(new Date(s).getTime()) && /^\d{4}-\d{2}-\d{2}/.test(s);
-    case "DT": return !Number.isNaN(new Date(s).getTime());
-    case "Bool": return ["true", "false"].includes(s.toLowerCase());
-    default: return false;
+    case "NR3":
+      return !Number.isNaN(parseFloat(s));
+    case "M":
+      return s.length <= (width ?? 255);
+    case "B":
+      return /^[01]+$/.test(s) && s.length <= (width ?? 8);
+    case "Date":
+      return (
+        !Number.isNaN(new Date(s).getTime()) && /^\d{4}-\d{2}-\d{2}/.test(s)
+      );
+    case "DT":
+      return !Number.isNaN(new Date(s).getTime());
+    case "Bool":
+      return ["true", "false"].includes(s.toLowerCase());
+    default:
+      return false;
   }
 }

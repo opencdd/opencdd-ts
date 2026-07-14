@@ -1,6 +1,11 @@
 export type { Rule, ValidationContext, ValidationError } from "./Rule";
 export { validationError } from "./Rule";
-export { Condition, ConditionSyntaxError, type ConditionOperator, type ConditionRhs } from "../models/Condition";
+export {
+  Condition,
+  ConditionSyntaxError,
+  type ConditionOperator,
+  type ConditionRhs,
+} from "../models/Condition";
 export {
   runValidation,
   validateEntity,
@@ -22,4 +27,8 @@ export { R09SetRule } from "./rules/R09SetRule";
 export { R10SynonymRule } from "./rules/R10SynonymRule";
 export { R11ConditionRule } from "./rules/R11ConditionRule";
 export { R12DataTypeRule } from "./rules/R12DataTypeRule";
-export { R14HierarchyRule, classHierarchyAcyclic, compositionHierarchyAcyclic } from "./rules/R14HierarchyRule";
+export {
+  R14HierarchyRule,
+  classHierarchyAcyclic,
+  compositionHierarchyAcyclic,
+} from "./rules/R14HierarchyRule";

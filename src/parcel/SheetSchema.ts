@@ -75,10 +75,15 @@ export type DirectiveCell = string | number | boolean | null | undefined;
 export class SheetSchema {
   private readonly columns: SheetColumn[] = [];
   private readonly columnsById = new Map<string, SheetColumn>();
-  private readonly columnDirectives = new Map<string, (DirectiveCell | undefined)[]>();
+  private readonly columnDirectives = new Map<
+    string,
+    (DirectiveCell | undefined)[]
+  >();
   private finalized = false;
 
-  static fromHeaderRows(rows: readonly (readonly DirectiveCell[])[]): SheetSchema {
+  static fromHeaderRows(
+    rows: readonly (readonly DirectiveCell[])[],
+  ): SheetSchema {
     const schema = new SheetSchema();
     for (const row of rows) schema.addDirectiveRow(row);
     schema.finalize();
@@ -150,7 +155,10 @@ export class SheetSchema {
   }
 
   column(propertyIdOrName: string, lang = "en"): SheetColumn | undefined {
-    return this.findByPropertyId(propertyIdOrName) ?? this.findByName(propertyIdOrName, lang);
+    return (
+      this.findByPropertyId(propertyIdOrName) ??
+      this.findByName(propertyIdOrName, lang)
+    );
   }
 
   findByPropertyId(id: string): SheetColumn | undefined {
@@ -159,7 +167,9 @@ export class SheetSchema {
 
   findByName(name: string, lang = "en"): SheetColumn | undefined {
     const needle = name.toLowerCase();
-    return this.columns.find((c) => (columnName(c, lang) ?? "").toLowerCase() === needle);
+    return this.columns.find(
+      (c) => (columnName(c, lang) ?? "").toLowerCase() === needle,
+    );
   }
 
   each(callback: (col: SheetColumn) => void): void {
@@ -179,7 +189,10 @@ export class SheetSchema {
     return s.length === 0 ? undefined : s;
   }
 
-  private langHashFor(directive: string, colIdx: number): Record<string, string> {
+  private langHashFor(
+    directive: string,
+    colIdx: number,
+  ): Record<string, string> {
     const out: Record<string, string> = {};
     for (const [key, vals] of this.columnDirectives) {
       const dot = key.indexOf(".");

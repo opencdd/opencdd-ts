@@ -23,16 +23,25 @@ export class EffectiveProperties {
   }
 
   codesFor(klass: Klass | IRDI | string): string[] {
-    return this.for(klass).properties.map((p) => p.code ?? "").filter((c) => c.length > 0);
+    return this.for(klass)
+      .properties.map((p) => p.code ?? "")
+      .filter((c) => c.length > 0);
   }
 
   private resolveKlass(value: Klass | IRDI | string): Klass | null {
     if (value instanceof Klass) return value;
-    const entity = this.database.resolveReference(value instanceof IRDI ? value.toString() : value);
+    const entity = this.database.resolveReference(
+      value instanceof IRDI ? value.toString() : value,
+    );
     return entity instanceof Klass ? entity : null;
   }
 
-  private accumulate(klass: Klass, seen: Set<string>, acc: Property[], sources: Map<string, Entity[]>): void {
+  private accumulate(
+    klass: Klass,
+    seen: Set<string>,
+    acc: Property[],
+    sources: Map<string, Entity[]>,
+  ): void {
     const key = klass.irdi?.toString();
     if (key === undefined) return;
     if (seen.has(key)) return;
@@ -73,7 +82,10 @@ export class EffectiveProperties {
   }
 }
 
-const EMPTY_RESULT: EffectivePropertiesResult = { properties: [], sources: new Map() };
+const EMPTY_RESULT: EffectivePropertiesResult = {
+  properties: [],
+  sources: new Map(),
+};
 
 function dedupeByIrdi(properties: Property[]): Property[] {
   const seen = new Set<string>();

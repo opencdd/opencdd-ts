@@ -27,7 +27,11 @@ export function emitYaml(nodes: readonly YamlRecord[]): string {
   return lines.join("\n") + "\n";
 }
 
-function emitRecord(record: YamlRecord, indent: number, asSequenceItem: boolean): string[] {
+function emitRecord(
+  record: YamlRecord,
+  indent: number,
+  asSequenceItem: boolean,
+): string[] {
   const entries = Object.entries(record);
   if (entries.length === 0) return asSequenceItem ? ["{}"] : [];
   const prefix = " ".repeat(indent);
@@ -45,7 +49,8 @@ function emitRecord(record: YamlRecord, indent: number, asSequenceItem: boolean)
 function renderInlineAfterKey(value: unknown): string {
   if (value === null || value === undefined) return " null";
   if (typeof value === "string") return ` ${quoteString(value)}`;
-  if (typeof value === "number" || typeof value === "boolean") return ` ${String(value)}`;
+  if (typeof value === "number" || typeof value === "boolean")
+    return ` ${String(value)}`;
   return "";
 }
 

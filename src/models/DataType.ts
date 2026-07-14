@@ -10,11 +10,7 @@
  *   - Parameterized: CLASS_REFERENCE(id), ENUM_STRING_TYPE(id), ENUM_REFERENCE_TYPE(id)
  */
 export type DataTypeKind =
-  | "simple"
-  | "measure"
-  | "class_reference"
-  | "enum_string"
-  | "enum_reference";
+  "simple" | "measure" | "class_reference" | "enum_string" | "enum_reference";
 
 const SIMPLE_TYPES = new Set([
   "STRING_TYPE",
@@ -65,7 +61,11 @@ export abstract class DataType {
   }
 
   get reference(): boolean {
-    return this.kind === "class_reference" || this.kind === "enum_string" || this.kind === "enum_reference";
+    return (
+      this.kind === "class_reference" ||
+      this.kind === "enum_string" ||
+      this.kind === "enum_reference"
+    );
   }
 
   get classReference(): boolean {

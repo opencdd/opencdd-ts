@@ -23,17 +23,20 @@ export type EntityConstructor = new (
   metaClassIrdi: string | null,
 ) => Entity;
 
-export const ENTITY_CONSTRUCTORS: Readonly<Record<string, EntityConstructor>> = {
-  [MDC_C002]: Klass,
-  [MDC_C003]: Property,
-  [MDC_C005]: ValueList,
-  [MDC_C009]: Unit,
-  [MDC_C010]: ValueTerm,
-  [MDC_C011]: Relation,
-  [EXT_C001]: ViewControl,
-};
+export const ENTITY_CONSTRUCTORS: Readonly<Record<string, EntityConstructor>> =
+  {
+    [MDC_C002]: Klass,
+    [MDC_C003]: Property,
+    [MDC_C005]: ValueList,
+    [MDC_C009]: Unit,
+    [MDC_C010]: ValueTerm,
+    [MDC_C011]: Relation,
+    [EXT_C001]: ViewControl,
+  };
 
-export function entityConstructorFor(metaClassIrdi: string | null | undefined): EntityConstructor | undefined {
+export function entityConstructorFor(
+  metaClassIrdi: string | null | undefined,
+): EntityConstructor | undefined {
   if (!metaClassIrdi) return undefined;
   return ENTITY_CONSTRUCTORS[metaClassIrdi];
 }

@@ -5,7 +5,9 @@
  */
 
 export function isEmpty(value: unknown): boolean {
-  return value === null || value === undefined || String(value).trim().length === 0;
+  return (
+    value === null || value === undefined || String(value).trim().length === 0
+  );
 }
 
 export function isBlank(value: unknown): boolean {
@@ -22,7 +24,7 @@ export function isBlank(value: unknown): boolean {
 export function rubyInspect(value: unknown): string {
   if (value === null || value === undefined) return "nil";
   if (typeof value === "string") return JSON.stringify(value);
-  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
   return JSON.stringify(value);
 }
-

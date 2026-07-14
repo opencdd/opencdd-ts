@@ -3,7 +3,8 @@ import * as Pids from "../../models/PropertyIds.generated";
 import { IRDI } from "../../models/IRDI";
 import { isEmpty, rubyInspect } from "./shared";
 
-const FULL_PATTERN = /^[^/#\s]+\/[^/#\s]*\/\/\/[^/#\s]+#[^#\s]+(?:##\d+)?(?:###[^#]+)?$/;
+const FULL_PATTERN =
+  /^[^/#\s]+\/[^/#\s]*\/\/\/[^/#\s]+#[^#\s]+(?:##\d+)?(?:###[^#]+)?$/;
 const SHORT_PATTERN = /^[A-Za-z0-9_]+$/;
 
 export class R01IrdiRule implements Rule {
@@ -29,8 +30,7 @@ export class R01IrdiRule implements Rule {
 
 function isCodeColumn(ctx: ValidationContext): boolean {
   return (
-    ctx.columnIri.startsWith(Pids.MDC_P001) ||
-    ctx.columnIri === Pids.EXT_P001
+    ctx.columnIri.startsWith(Pids.MDC_P001) || ctx.columnIri === Pids.EXT_P001
   );
 }
 

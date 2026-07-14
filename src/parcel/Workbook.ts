@@ -48,7 +48,10 @@ export const HEADER_ROW_NAMES: readonly HeaderRowName[] = [
   "unit",
 ];
 
-export const MANDATORY_HEADER_ROWS: readonly HeaderRowName[] = ["class_id", "property_id"];
+export const MANDATORY_HEADER_ROWS: readonly HeaderRowName[] = [
+  "class_id",
+  "property_id",
+];
 
 const PARCEL_TYPE_LABELS: Readonly<Record<string, string>> = {
   class: "CLASS",
@@ -85,7 +88,9 @@ export class Workbook {
     this.sheetmap = opts.sheetmap ?? [];
     this.project = opts.project;
     this.sourcePath = opts.sourcePath;
-    this.hiddenHeaderRowsInternal = Workbook.validateHidden(opts.hiddenHeaderRows);
+    this.hiddenHeaderRowsInternal = Workbook.validateHidden(
+      opts.hiddenHeaderRows,
+    );
     this.sheetsByName = new Map(this.sheets.map((s) => [s.name, s]));
     Object.freeze(this);
   }
@@ -155,7 +160,9 @@ export class Workbook {
     });
   }
 
-  private static validateHidden(rows: readonly HeaderRowName[] | undefined): Set<HeaderRowName> {
+  private static validateHidden(
+    rows: readonly HeaderRowName[] | undefined,
+  ): Set<HeaderRowName> {
     if (!rows) return new Set();
     const set = new Set(rows);
     for (const r of set) {

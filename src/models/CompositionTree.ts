@@ -21,23 +21,46 @@ export class CompositionTree {
     return this.buildClassNode(klass, new Set<string>(), 0, maxDepth);
   }
 
-  private buildClassNode(value: Klass, path: Set<string>, depth: number, maxDepth: number): CompositionTreeNode {
+  private buildClassNode(
+    value: Klass,
+    path: Set<string>,
+    depth: number,
+    maxDepth: number,
+  ): CompositionTreeNode {
     if (value.irdi === null) {
       return { entity: value, children: [] };
     }
     const key = value.irdi.toString();
-    const children = path.has(key) || depth >= maxDepth
-      ? []
-      : this.buildPropertyChildren(value, this.withPath(path, key), depth + 1, maxDepth);
+    const children =
+      path.has(key) || depth >= maxDepth
+        ? []
+        : this.buildPropertyChildren(
+            value,
+            this.withPath(path, key),
+            depth + 1,
+            maxDepth,
+          );
     return { entity: value, children };
   }
 
-  private buildPropertyChildren(klass: Klass, path: Set<string>, depth: number, maxDepth: number): CompositionTreeNode[] {
+  private buildPropertyChildren(
+    klass: Klass,
+    path: Set<string>,
+    depth: number,
+    maxDepth: number,
+  ): CompositionTreeNode[] {
     const result = this.effectiveProperties.for(klass);
-    return result.properties.map((prop) => this.buildPropertyNode(prop, path, depth, maxDepth));
+    return result.properties.map((prop) =>
+      this.buildPropertyNode(prop, path, depth, maxDepth),
+    );
   }
 
-  private buildPropertyNode(prop: Property, path: Set<string>, depth: number, maxDepth: number): CompositionTreeNode {
+  private buildPropertyNode(
+    prop: Property,
+    path: Set<string>,
+    depth: number,
+    maxDepth: number,
+  ): CompositionTreeNode {
     const sub: CompositionTreeNode[] = [];
     if (depth < maxDepth) {
       for (const target of this.classReferenceTargets(prop)) {
@@ -65,7 +88,9 @@ export class CompositionTree {
     const definitionClass = this.database.find(dcIrdi);
     if (!(definitionClass instanceof Klass)) return [];
     if (!definitionClass.categorical) return [];
-    return definitionClass.children.filter((c): c is Klass => c instanceof Klass);
+    return definitionClass.children.filter(
+      (c): c is Klass => c instanceof Klass,
+    );
   }
 
   private withPath(path: Set<string>, key: string): Set<string> {
@@ -75,7 +100,10 @@ export class CompositionTree {
   }
 }
 
-export function walkComposition(node: CompositionTreeNode, callback: (n: CompositionTreeNode) => void): void {
+export function walkComposition(
+  node: CompositionTreeNode,
+  callback: (n: CompositionTreeNode) => void,
+): void {
   callback(node);
   for (const child of node.children) walkComposition(child, callback);
 }
@@ -87,6 +115,8 @@ export function compositionDepth(node: CompositionTreeNode): number {
 
 export function compositionSize(node: CompositionTreeNode): number {
   let count = 0;
-  walkComposition(node, () => { count++; });
+  walkComposition(node, () => {
+    count++;
+  });
   return count;
 }

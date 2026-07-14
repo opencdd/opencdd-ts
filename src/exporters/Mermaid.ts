@@ -52,7 +52,8 @@ export class MermaidExporter {
     this.lines.push(`    +code ${klass.code ?? ""}`);
     this.lines.push(`  }`);
     const note = klass.preferredName("en");
-    if (note && note.length > 0) this.lines.push(`  ${id} : ${quoteLabel(note)}`);
+    if (note && note.length > 0)
+      this.lines.push(`  ${id} : ${quoteLabel(note)}`);
   }
 
   private emitInheritanceEdge(klass: Klass): void {
@@ -67,7 +68,9 @@ export class MermaidExporter {
     for (const ref of klass.isCaseOfIrdis) {
       const target = this.database?.resolveReference(ref.toString());
       if (!(target instanceof Klass)) continue;
-      this.lines.push(`  ${mermaidId(target)} <.. ${mermaidId(klass)} : is_case_of`);
+      this.lines.push(
+        `  ${mermaidId(target)} <.. ${mermaidId(klass)} : is_case_of`,
+      );
     }
   }
 }

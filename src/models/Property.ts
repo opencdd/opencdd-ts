@@ -57,7 +57,9 @@ export class Property extends Entity {
 
   get isEnum(): boolean {
     const dt = this.dataTypeParsed;
-    return dt !== null && (dt.kind === "enum_string" || dt.kind === "enum_reference");
+    return (
+      dt !== null && (dt.kind === "enum_string" || dt.kind === "enum_reference")
+    );
   }
 
   get valueFormat(): string | undefined {
@@ -94,7 +96,9 @@ export class Property extends Entity {
 
   get dataElementType(): PropertyDataTypeElement | null {
     if (this.cachedDataElementType === undefined) {
-      this.cachedDataElementType = PropertyDataTypeElement.parse(this.getString(Pids.MDC_P020));
+      this.cachedDataElementType = PropertyDataTypeElement.parse(
+        this.getString(Pids.MDC_P020),
+      );
     }
     return this.cachedDataElementType;
   }

@@ -1,9 +1,13 @@
 import { Database } from "./Database";
 import { Klass } from "./Klass";
 
-export type ClassTreeField = "code" | "name" | "irdi" | "definition" | "class_type";
+export type ClassTreeField =
+  "code" | "name" | "irdi" | "definition" | "class_type";
 
-export const CLASS_TREE_DEFAULT_FIELDS: readonly ClassTreeField[] = ["code", "name"];
+export const CLASS_TREE_DEFAULT_FIELDS: readonly ClassTreeField[] = [
+  "code",
+  "name",
+];
 export const CLASS_TREE_AVAILABLE_FIELDS: readonly ClassTreeField[] = [
   "code",
   "name",
@@ -39,15 +43,26 @@ export class ClassTree {
     this.walk(this.roots(), 0, callback);
   }
 
-  toObject(maxDepth: number | null = null, fields: readonly ClassTreeField[] = this.fields): ClassTreeNode[] {
+  toObject(
+    maxDepth: number | null = null,
+    fields: readonly ClassTreeField[] = this.fields,
+  ): ClassTreeNode[] {
     return this.roots().map((k) => this.nodeObject(k, 0, maxDepth, fields));
   }
 
-  subtree(klass: Klass, maxDepth: number | null = null, fields: readonly ClassTreeField[] = this.fields): ClassTreeNode {
+  subtree(
+    klass: Klass,
+    maxDepth: number | null = null,
+    fields: readonly ClassTreeField[] = this.fields,
+  ): ClassTreeNode {
     return this.nodeObject(klass, 0, maxDepth, fields);
   }
 
-  private walk(nodes: readonly Klass[], depth: number, callback: (klass: Klass, depth: number) => void): void {
+  private walk(
+    nodes: readonly Klass[],
+    depth: number,
+    callback: (klass: Klass, depth: number) => void,
+  ): void {
     for (const node of nodes) {
       callback(node, depth);
       this.walk(node.children, depth + 1, callback);
@@ -65,13 +80,19 @@ export class ClassTree {
     if (maxDepth === null || depth < maxDepth) {
       const kids = klass.children;
       if (kids.length > 0) {
-        node.children = kids.map((c) => this.nodeObject(c, depth + 1, maxDepth, fields));
+        node.children = kids.map((c) =>
+          this.nodeObject(c, depth + 1, maxDepth, fields),
+        );
       }
     }
     return node;
   }
 
-  private mergeField(node: ClassTreeNode, klass: Klass, field: ClassTreeField): void {
+  private mergeField(
+    node: ClassTreeNode,
+    klass: Klass,
+    field: ClassTreeField,
+  ): void {
     switch (field) {
       case "code":
         node.code = klass.code;
@@ -94,7 +115,9 @@ export class ClassTree {
       }
       default: {
         const exhaustive: never = field;
-        throw new Error(`unknown field ${String(exhaustive)}; valid: ${CLASS_TREE_AVAILABLE_FIELDS.join(", ")}`);
+        throw new Error(
+          `unknown field ${String(exhaustive)}; valid: ${CLASS_TREE_AVAILABLE_FIELDS.join(", ")}`,
+        );
       }
     }
   }

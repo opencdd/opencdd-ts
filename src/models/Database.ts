@@ -31,6 +31,10 @@ import { EnumStringType, EnumReferenceType } from "./DataType";
 import { parseIrdiList } from "./helpers";
 import { codePropertyIdFor } from "./codeProperty";
 import { referencePropertyIds, setOfRefsPropertyIds } from "./referenceKinds";
+import { ClassTree } from "./ClassTree";
+import { CompositionTree } from "./CompositionTree";
+import { RelationTree } from "./RelationTree";
+import { EffectiveProperties } from "./EffectiveProperties";
 import { databaseToYaml, databaseFromYaml } from "../persistence/YamlDatabase";
 import { saveToDirectory, loadFromDirectory } from "../persistence/EntityStore";
 
@@ -101,6 +105,13 @@ export class Database {
     if (irdi) this.entitiesByIrdi.delete(irdi.toString());
     this.removeFromPropertyIndex(entity);
     this.detachFromHierarchy(entity);
+    this.purgeSymbolsOf(entity);
+  }
+
+  private purgeSymbolsOf(entity: Entity): void {
+    for (const [key, value] of this.symbolTable) {
+      if (value === entity) this.symbolTable.delete(key);
+    }
   }
 
   removeEntity(irdi: IRDI | string | Entity): Entity | null {
@@ -264,6 +275,45 @@ export class Database {
     return this.classes().filter((k) => k.parentIrdi === null);
   }
 
+  categoricalClasses(): Klass[] {
+    return this.classes().filter((k) => k.categorical);
+  }
+
+  classTree(): ClassTree {
+    return new ClassTree(this);
+  }
+
+  effectiveProperties(): EffectiveProperties {
+    return new EffectiveProperties(this);
+  }
+
+  compositionTree(klass: Klass | IRDI | string, maxDepth = 10) {
+    const k = coerceToKlass(this, klass);
+    if (!k) return null;
+    return new CompositionTree(this).for(k, maxDepth);
+  }
+
+  relationTree(root: Relation | IRDI | string | null = null, maxDepth = 10) {
+    return new RelationTree(this).for(root, maxDepth);
+  }
+
+  instancesOf(categoricalKlass: Klass | IRDI | string): Klass[] {
+    const k = coerceToKlass(this, categoricalKlass);
+    if (!k) return [];
+    return k.categoricalInstances(this);
+  }
+
+  validClassReference(
+    categoricalKlass: Klass | IRDI | string,
+    value: Entity | IRDI | string | null | undefined,
+  ): boolean {
+    const target = coerceToKlass(this, value);
+    if (!target) return false;
+    return this.instancesOf(categoricalKlass).some(
+      (k) => k.irdi?.equals(target.irdi ?? IRDI.fromShort("")) ?? false,
+    );
+  }
+
   propertiesOf(klass: Klass | IRDI | string): Property[] {
     const k = klass instanceof Klass ? klass : this.find(klass);
     if (!(k instanceof Klass)) return [];
@@ -402,6 +452,7 @@ export class Database {
 
   private bindSymbol(name: string, entity: Entity): void {
     const existing = this.symbolTable.get(name);
+    if (existing === entity) return;
     if (
       existing !== undefined &&
       (existing.irdi === null ||
@@ -419,7 +470,9 @@ export class Database {
   }
 
   private rebuildSymbolTable(): void {
-    this.symbolTable.clear();
+    // Preserve Builder-registered symbolic names; only re-bind
+    // preferred-name + code symbols (idempotent — bindSymbol
+    // warns on conflict).
     for (const e of this.entities()) this.registerEntitySymbols(e);
   }
 
@@ -575,4 +628,15 @@ function propertiesEqual(a: Entity, b: Entity): boolean {
     if (other !== v && String(other) !== String(v)) return false;
   }
   return true;
+}
+
+function coerceToKlass(
+  db: Database,
+  value: Entity | IRDI | string | null | undefined,
+): Klass | null {
+  if (value === null || value === undefined) return null;
+  if (value instanceof Klass) return value;
+  const key = value instanceof IRDI ? value.toString() : value;
+  const entity = db.resolveReference(key);
+  return entity instanceof Klass ? entity : null;
 }

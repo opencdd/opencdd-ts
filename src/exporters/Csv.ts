@@ -19,9 +19,7 @@ import { Entity } from "../models/Entity";
 import { Sheet } from "../parcel/Sheet";
 import type { SheetColumn } from "../parcel/SheetSchema";
 import { REGISTRY as PID_REGISTRY } from "../models/PropertyIds.generated";
-import {
-  metaClassForType,
-} from "../models/MetaClasses.generated";
+import { metaClassForType } from "../models/MetaClasses.generated";
 import type { EntityType } from "../models/MetaClasses.generated";
 
 const DEFAULT_SOURCE_LANGUAGE = "en";
@@ -73,10 +71,12 @@ export class CsvWriter {
     parcelId: string,
     sourceLanguage: string = DEFAULT_SOURCE_LANGUAGE,
   ): WrittenCsvFile[] {
-    return this.buildSheets(database, parcelId, sourceLanguage).map((built) => ({
-      name: `${parcelId}_${TYPE_LABELS[built.type]}.csv`,
-      content: this.writeSheet(built.sheet, built.entities, sourceLanguage),
-    }));
+    return this.buildSheets(database, parcelId, sourceLanguage).map(
+      (built) => ({
+        name: `${parcelId}_${TYPE_LABELS[built.type]}.csv`,
+        content: this.writeSheet(built.sheet, built.entities, sourceLanguage),
+      }),
+    );
   }
 
   buildSheets(
@@ -110,14 +110,22 @@ export class CsvWriter {
   }
 }
 
-function cellValueFor(entity: Entity, col: SheetColumn, sourceLanguage: string): string {
+function cellValueFor(
+  entity: Entity,
+  col: SheetColumn,
+  sourceLanguage: string,
+): string {
   const pid = col.propertyId;
   const direct = entity.properties.get(pid);
   if (direct !== undefined) return scalarToCell(direct);
   return scalarToCell(multilingualLookup(entity, pid, sourceLanguage));
 }
 
-function multilingualLookup(entity: Entity, pid: string, sourceLanguage: string): unknown {
+function multilingualLookup(
+  entity: Entity,
+  pid: string,
+  sourceLanguage: string,
+): unknown {
   const entry = PID_REGISTRY[pid];
   if (entry?.multilingual) {
     const v = entity.properties.get(`${pid}.${sourceLanguage}`);
@@ -134,7 +142,8 @@ function multilingualLookup(entity: Entity, pid: string, sourceLanguage: string)
 function scalarToCell(value: unknown): string {
   if (value === null || value === undefined) return "";
   if (typeof value === "string") return value;
-  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
   return String(value);
 }
 

@@ -9,6 +9,8 @@ export function byEntityCode<T extends Entity>(a: T, b: T): number {
   return (a.code ?? "").localeCompare(b.code ?? "");
 }
 
-export function sortByEntityCode<T extends Entity>(entities: readonly T[]): T[] {
+export function sortByEntityCode<T extends Entity>(
+  entities: readonly T[],
+): T[] {
   return [...entities].sort(byEntityCode);
 }

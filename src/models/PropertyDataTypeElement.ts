@@ -11,9 +11,7 @@
  */
 
 export type PropertyDataElementTypeValue =
-  | "NON_DEPENDENT_P_DET"
-  | "CONDITION_DET"
-  | "DEPENDENT_P_DET";
+  "NON_DEPENDENT_P_DET" | "CONDITION_DET" | "DEPENDENT_P_DET";
 
 const VALUES: ReadonlySet<PropertyDataElementTypeValue> = new Set([
   "NON_DEPENDENT_P_DET",
@@ -47,7 +45,9 @@ export class PropertyDataTypeElement {
   }
 
   equals(other: PropertyDataTypeElement): boolean {
-    return other instanceof PropertyDataTypeElement && this.value === other.value;
+    return (
+      other instanceof PropertyDataTypeElement && this.value === other.value
+    );
   }
 
   static parse(raw: string | null | undefined): PropertyDataTypeElement | null {

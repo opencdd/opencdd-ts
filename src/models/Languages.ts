@@ -69,7 +69,7 @@ export class Languages {
     }
     const source = langs.has(defaultSource)
       ? defaultSource
-      : (langs.values().next().value as string | undefined) ?? defaultSource;
+      : ((langs.values().next().value as string | undefined) ?? defaultSource);
     const translations = Array.from(langs).filter((l) => l !== source);
     return new Languages(source, translations);
   }

@@ -18,6 +18,7 @@
 import type { Entity } from "../models/Entity";
 import type { Database } from "../models/Database";
 import { Property } from "../models/Property";
+import { ClassReference } from "../models/DataType";
 import { REGISTRY } from "../models/PropertyIds.generated";
 import * as Pids from "../models/PropertyIds.generated";
 import type { Rule, ValidationContext, ValidationError } from "./Rule";
@@ -34,7 +35,12 @@ import { R09SetRule } from "./rules/R09SetRule";
 import { R10SynonymRule } from "./rules/R10SynonymRule";
 import { R11ConditionRule } from "./rules/R11ConditionRule";
 import { R12DataTypeRule } from "./rules/R12DataTypeRule";
-import { R14HierarchyRule, classHierarchyAcyclic, compositionHierarchyAcyclic } from "./rules/R14HierarchyRule";
+import {
+  R14HierarchyRule,
+  classHierarchyAcyclic,
+  compositionHierarchyAcyclic,
+} from "./rules/R14HierarchyRule";
+import { R16ClassReferenceRule } from "./rules/R16ClassReferenceRule";
 
 export interface RunnerDeps {
   readonly entities: readonly Entity[];
@@ -58,6 +64,7 @@ export const DATABASE_RULES: readonly Rule[] = [
   new R02UniquenessRule(),
   new R08ReferenceRule(),
   new R10SynonymRule(),
+  new R16ClassReferenceRule(),
 ];
 
 export const HIERARCHY_RULE = new R14HierarchyRule();
@@ -66,13 +73,19 @@ export function allRules(): readonly Rule[] {
   return [...SELF_CONTAINED_RULES, ...DATABASE_RULES, HIERARCHY_RULE];
 }
 
-export function runValidation(deps: RunnerDeps, rules: readonly Rule[] = defaultRules(deps)): ValidationError[] {
+export function runValidation(
+  deps: RunnerDeps,
+  rules: readonly Rule[] = defaultRules(deps),
+): ValidationError[] {
   const errors: ValidationError[] = [];
   for (const entity of deps.entities) {
     validateEntity(entity, deps, rules, errors);
   }
   if (deps.database) {
-    if (!classHierarchyAcyclic(deps.database) || !compositionHierarchyAcyclic(deps.database)) {
+    if (
+      !classHierarchyAcyclic(deps.database) ||
+      !compositionHierarchyAcyclic(deps.database)
+    ) {
       errors.push(
         validationError({
           sheet: null,
@@ -122,11 +135,20 @@ export function validateEntity(
 }
 
 function defaultRules(deps: RunnerDeps): readonly Rule[] {
-  return deps.database ? [...SELF_CONTAINED_RULES, ...DATABASE_RULES] : SELF_CONTAINED_RULES;
+  return deps.database
+    ? [...SELF_CONTAINED_RULES, ...DATABASE_RULES]
+    : SELF_CONTAINED_RULES;
 }
 
 function derivedDataType(entity: Entity, base: string): string | undefined {
-  if (base === Pids.MDC_P022 && entity instanceof Property) {
+  if (!(entity instanceof Property)) return undefined;
+  if (base === Pids.MDC_P022) return entity.dataTypeRaw;
+  // For CLASS_REFERENCE properties, propagate the data_type to the
+  // definition_class column so R16 can validate categorical instances.
+  if (
+    base === Pids.MDC_P021 &&
+    entity.dataTypeParsed instanceof ClassReference
+  ) {
     return entity.dataTypeRaw;
   }
   return undefined;

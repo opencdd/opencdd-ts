@@ -18,8 +18,10 @@ export function parseIrdiList(raw: unknown): IRDI[] {
 
 function unwrapDelimiters(s: string): string {
   const trimmed = s.trim();
-  if (trimmed.startsWith("{") && trimmed.endsWith("}")) return trimmed.slice(1, -1);
-  if (trimmed.startsWith("(") && trimmed.endsWith(")")) return trimmed.slice(1, -1);
+  if (trimmed.startsWith("{") && trimmed.endsWith("}"))
+    return trimmed.slice(1, -1);
+  if (trimmed.startsWith("(") && trimmed.endsWith(")"))
+    return trimmed.slice(1, -1);
   return trimmed;
 }
 

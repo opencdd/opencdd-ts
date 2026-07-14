@@ -9,7 +9,8 @@
  */
 
 const SET_PATTERN = /^\{(?<body>.*)\}$/s;
-const EXPRESSION_PATTERN = /^(?<left>[^=!<>]+?)\s*(?<op>==|!=)\s*(?<right>.+)$/s;
+const EXPRESSION_PATTERN =
+  /^(?<left>[^=!<>]+?)\s*(?<op>==|!=)\s*(?<right>.+)$/s;
 
 export type ConditionOperator = "==" | "!=";
 
@@ -32,7 +33,9 @@ export class Condition {
     const actual = bindings[this.left] ?? bindings[this.left];
     if (actual === undefined || actual === null) return false;
     if (this.set) {
-      const contained = (this.right as readonly string[]).some((r) => matches(actual, r));
+      const contained = (this.right as readonly string[]).some((r) =>
+        matches(actual, r),
+      );
       return this.operator === "==" ? contained : !contained;
     }
     const equal = matches(actual, this.right as string);
@@ -63,7 +66,9 @@ export class Condition {
     if (!s) return null;
     const m = s.match(EXPRESSION_PATTERN);
     if (!m || m.groups === undefined) {
-      throw new ConditionSyntaxError(`invalid condition expression: ${JSON.stringify(s)}`);
+      throw new ConditionSyntaxError(
+        `invalid condition expression: ${JSON.stringify(s)}`,
+      );
     }
     const left = m.groups.left.trim();
     const op = m.groups.op as ConditionOperator;
@@ -71,7 +76,11 @@ export class Condition {
     return new Condition(left, op, right);
   }
 
-  static of(left: string, operator: ConditionOperator, right: ConditionRhs): Condition {
+  static of(
+    left: string,
+    operator: ConditionOperator,
+    right: ConditionRhs,
+  ): Condition {
     return new Condition(left.trim(), operator, right);
   }
 }

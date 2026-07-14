@@ -15,7 +15,9 @@ export const CODE_PROPERTY_CANDIDATES: readonly string[] = [
   Pids.MDC_P001,
 ];
 
-export function codePropertyIdFor(metaClassIrdi: string | null | undefined): string | undefined {
+export function codePropertyIdFor(
+  metaClassIrdi: string | null | undefined,
+): string | undefined {
   if (!metaClassIrdi) return undefined;
   return CODE_PROPERTY_BY_META_CLASS[metaClassIrdi];
 }

@@ -7,7 +7,9 @@ const PARCEL_VARIANT_TO_CANONICAL: Readonly<Record<string, string>> = {
   MDC_P007_2: "MDC_P009",
 };
 
-export function canonicalParcelId(rawId: string | null | undefined): string | null {
+export function canonicalParcelId(
+  rawId: string | null | undefined,
+): string | null {
   if (rawId === null || rawId === undefined) return null;
   const s = String(rawId).trim();
   if (s.length === 0) return null;

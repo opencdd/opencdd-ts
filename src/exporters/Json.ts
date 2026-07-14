@@ -34,8 +34,12 @@ function compact<T extends Record<string, unknown>>(record: T): JsonNode {
   return out;
 }
 
-function irdiStrings(values: ReadonlyArray<{ toString(): string } | null>): string[] {
-  return values.filter((v): v is { toString(): string } => v !== null).map((v) => v.toString());
+function irdiStrings(
+  values: ReadonlyArray<{ toString(): string } | null>,
+): string[] {
+  return values
+    .filter((v): v is { toString(): string } => v !== null)
+    .map((v) => v.toString());
 }
 
 function classNode(klass: Klass): JsonNode {
@@ -97,7 +101,8 @@ function valueListNode(vl: ValueList): JsonNode {
     list_type: vl.listType,
     term_irdis: irdiStrings(vl.termIrdis),
     code_list: vl.codeList,
-    selection_count: selectionCount && selectionCount.length > 0 ? selectionCount : undefined,
+    selection_count:
+      selectionCount && selectionCount.length > 0 ? selectionCount : undefined,
   });
 }
 
@@ -146,12 +151,17 @@ export class JsonExporter {
   buildNodes(database: Database): JsonNode[] {
     const nodes: JsonNode[] = [];
     for (const klass of sortedClasses(database)) nodes.push(classNode(klass));
-    for (const e of sortByEntityCode(database.properties())) nodes.push(propertyNode(e));
+    for (const e of sortByEntityCode(database.properties()))
+      nodes.push(propertyNode(e));
     for (const e of sortByEntityCode(database.units())) nodes.push(unitNode(e));
-    for (const e of sortByEntityCode(database.valueLists())) nodes.push(valueListNode(e));
-    for (const e of sortByEntityCode(database.valueTerms())) nodes.push(valueTermNode(e));
-    for (const e of sortByEntityCode(database.relations())) nodes.push(relationNode(e));
-    for (const e of sortByEntityCode(database.viewControls())) nodes.push(viewControlNode(e));
+    for (const e of sortByEntityCode(database.valueLists()))
+      nodes.push(valueListNode(e));
+    for (const e of sortByEntityCode(database.valueTerms()))
+      nodes.push(valueTermNode(e));
+    for (const e of sortByEntityCode(database.relations()))
+      nodes.push(relationNode(e));
+    for (const e of sortByEntityCode(database.viewControls()))
+      nodes.push(viewControlNode(e));
     return nodes;
   }
 }

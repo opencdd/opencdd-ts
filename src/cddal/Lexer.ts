@@ -252,14 +252,22 @@ export class Lexer {
 
   private decodeEscape(esc: string, startLine: number): string {
     switch (esc) {
-      case '"': return '"';
-      case "\\": return "\\";
-      case "/": return "/";
-      case "b": return "\b";
-      case "f": return "\f";
-      case "n": return "\n";
-      case "r": return "\r";
-      case "t": return "\t";
+      case '"':
+        return '"';
+      case "\\":
+        return "\\";
+      case "/":
+        return "/";
+      case "b":
+        return "\b";
+      case "f":
+        return "\f";
+      case "n":
+        return "\n";
+      case "r":
+        return "\r";
+      case "t":
+        return "\t";
       case "u": {
         const hex = this.matchAt(this.pos, UNICODE_HEX_RE);
         if (!hex) {

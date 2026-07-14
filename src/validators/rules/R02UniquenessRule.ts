@@ -15,7 +15,11 @@ export class R02UniquenessRule implements Rule {
   readonly ruleId = "R02";
 
   applies(ctx: ValidationContext): boolean {
-    return isCodeColumn(ctx) && ctx.database !== undefined && ctx.entityType !== undefined;
+    return (
+      isCodeColumn(ctx) &&
+      ctx.database !== undefined &&
+      ctx.entityType !== undefined
+    );
   }
 
   call(value: unknown, ctx: ValidationContext): boolean {
@@ -37,7 +41,6 @@ export class R02UniquenessRule implements Rule {
 
 function isCodeColumn(ctx: ValidationContext): boolean {
   return (
-    ctx.columnIri.startsWith(Pids.MDC_P001) ||
-    ctx.columnIri === Pids.EXT_P001
+    ctx.columnIri.startsWith(Pids.MDC_P001) || ctx.columnIri === Pids.EXT_P001
   );
 }

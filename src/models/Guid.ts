@@ -1,7 +1,8 @@
 import { Entity } from "./Entity";
 import * as Pids from "./PropertyIds.generated";
 
-const PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function generateGuid(): string {
   return cryptoRandomUuid();
@@ -18,7 +19,10 @@ export function setGuidOn(entity: Entity): string {
 }
 
 function cryptoRandomUuid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
     return crypto.randomUUID();
   }
   return fallbackUuid();
@@ -26,7 +30,10 @@ function cryptoRandomUuid(): string {
 
 function fallbackUuid(): string {
   const bytes = new Uint8Array(16);
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.getRandomValues === "function"
+  ) {
     crypto.getRandomValues(bytes);
   } else {
     for (let i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256);

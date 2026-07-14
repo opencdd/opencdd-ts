@@ -46,6 +46,7 @@ import {
 } from "../models/MetaClasses.generated";
 import { Parser } from "./Parser";
 import { Resolver, ImportError } from "./Resolver";
+import { serializeValue as serializeValueNode } from "./ValueSerializer";
 
 const CODE_VARIANT_IDS = new Set([
   "MDC_P001",
@@ -360,31 +361,7 @@ function mergePropertyValue(existing: unknown, newValue: unknown): unknown {
 }
 
 function serializeValue(value: ValueNode): unknown {
-  return valueNodeToString(value);
-}
-
-function valueNodeToString(value: ValueNode): string {
-  switch (value.node) {
-    case "literal":
-      return value.raw;
-    case "identifier_ref":
-      return identifierRefToString(value);
-    case "set":
-      return `{${value.elements.map(valueNodeToString).join(",")}}`;
-    case "tuple":
-      return `(${value.elements.map(valueNodeToString).join(",")})`;
-    case "class_reference":
-      return `${value.typeName}(${valueNodeToString(value.argument)})`;
-    case "condition":
-      return `${value.left} ${value.operator} ${valueNodeToString(value.right)}`;
-  }
-}
-
-function identifierRefToString(ref: {
-  name: string;
-  owner: string | null;
-}): string {
-  return ref.owner ? `${ref.owner}.${ref.name}` : ref.name;
+  return serializeValueNode(value);
 }
 
 function extractIrdi(properties: Record<string, unknown>): IRDI | null {

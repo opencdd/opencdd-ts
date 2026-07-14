@@ -17,7 +17,9 @@ const DEFAULT_ALIAS_MAP: Readonly<Record<string, string>> = (() => {
     for (const alias of entry.aliases) {
       const prior = out[alias];
       if (prior !== undefined && prior !== id) {
-        console.warn(`AliasTable: alias "${alias}" claimed by both ${prior} and ${id}; keeping ${prior}`);
+        console.warn(
+          `AliasTable: alias "${alias}" claimed by both ${prior} and ${id}; keeping ${prior}`,
+        );
         continue;
       }
       out[alias] = id;
@@ -66,7 +68,9 @@ export class AliasTable {
   }
 
   each(callback: (aliasName: string, propertyId: string) => void): void {
-    this.table.forEach((propertyId, aliasName) => callback(aliasName, propertyId));
+    this.table.forEach((propertyId, aliasName) =>
+      callback(aliasName, propertyId),
+    );
   }
 
   toRecord(): Record<string, string> {
