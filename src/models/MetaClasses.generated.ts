@@ -8,7 +8,13 @@ export type EntityType =
   | "unit"
   | "value_list"
   | "value_term"
-  | "view_control";
+  | "view_control"
+  // TS-only provisional extension: IEC 62720 introduced `list_of_unit`
+  // for unit systems (e.g. "Metre-kilogram-second-ampere system of
+  // units"). The Ruby gem's MetaClasses registry doesn't define a
+  // meta-class for it yet — when it does, regenerate this file and
+  // remove the entries marked `// TS-ONLY` below.
+  | "list_of_unit";
 
 export interface MetaClassEntry {
   readonly irdi: string;
@@ -468,6 +474,36 @@ export const REGISTRY: Readonly<Record<string, MetaClassEntry>> = {
       "EXT_P003",
     ],
   },
+  // TS-ONLY: provisional entry for IEC 62720 list_of_unit. Code property
+  // borrows the Unit code (MDC_P001_10) — list_of_unit records in the
+  // wild carry only the common identifying fields (irdi, code,
+  // preferred_name). Replace with the real meta-class IRDI once the
+  // Ruby gem registers one.
+  MDC_C013: {
+    irdi: "MDC_C013",
+    name: "ListOfUnit",
+    entityType: "list_of_unit",
+    codePropertyId: "MDC_P001_10",
+    allowedPropertyIds: [
+      "MDC_P001",
+      "MDC_P001_10",
+      "EXT_P001",
+      "MDC_P002_1",
+      "MDC_P002_2",
+      "MDC_P003_1",
+      "MDC_P003_2",
+      "MDC_P003_3",
+      "MDC_P004",
+      "MDC_P005",
+      "MDC_P006",
+      "MDC_P008",
+      "MDC_P009",
+      "MDC_P112",
+      "MDC_P113",
+      "MDC_P066",
+      "MDC_P067",
+    ],
+  },
 };
 
 export const MDC_C002 = "MDC_C002";
@@ -477,6 +513,8 @@ export const MDC_C011 = "MDC_C011";
 export const MDC_C009 = "MDC_C009";
 export const MDC_C010 = "MDC_C010";
 export const EXT_C001 = "EXT_C001";
+// TS-ONLY: provisional meta-class for list_of_unit.
+export const MDC_C013 = "MDC_C013";
 
 export function entry(irdi: string): MetaClassEntry | undefined {
   return REGISTRY[irdi];

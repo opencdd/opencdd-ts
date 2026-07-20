@@ -17,13 +17,32 @@ const here = dirname(fileURLToPath(import.meta.url));
 const CDD_DATA_DIR = resolve(here, "../../cdd-data/data");
 
 const EXPECTED_COUNTS: Record<string, Record<string, number>> = {
-  oceanrunner: { class: 20, property: 19, value_list: 1, value_term: 0 },
-  iec63213: { class: 26, property: 67, value_list: 10, value_term: 114 },
-  "iec61360-7": { class: 52, property: 175, value_list: 34, value_term: 1393 },
-  iec61360: { class: 574, property: 1931, value_list: 307, value_term: 1804 },
-  iec62683: { class: 374, property: 765, value_list: 139, value_term: 582 },
-  iec63508: { class: 23, property: 33, value_list: 9, value_term: 86 },
-  iec61987: { class: 2696, property: 6461, value_list: 667, value_term: 3491 },
+  oceanrunner: { class: 20, property: 19, value_list: 1 },
+  iec63213: {
+    class: 26,
+    property: 67,
+    value_list: 10,
+    value_term: 114,
+    relation: 7,
+  },
+  "iec61360-7": { class: 57, property: 215, value_list: 48, value_term: 1823 },
+  iec61360: { class: 574, property: 2018, value_list: 318, value_term: 1866 },
+  iec62683: {
+    class: 375,
+    property: 765,
+    value_list: 139,
+    value_term: 582,
+    relation: 10,
+  },
+  iec63508: {
+    class: 23,
+    property: 33,
+    value_list: 9,
+    value_term: 86,
+    relation: 4,
+  },
+  iec61987: { class: 2704, property: 6471, value_list: 668, value_term: 3491 },
+  iec62720: { class: 1, unit: 2165, relation: 6, list_of_unit: 394 },
 };
 
 const RUN = existsSync(CDD_DATA_DIR);
@@ -51,6 +70,9 @@ class CountingVisitor extends Visitor {
   }
   visitViewControl() {
     this.counts.view_control = (this.counts.view_control ?? 0) + 1;
+  }
+  visitListOfUnit() {
+    this.counts.list_of_unit = (this.counts.list_of_unit ?? 0) + 1;
   }
 }
 
@@ -98,6 +120,7 @@ describeIf("cdd-data validation", () => {
           "value_term",
           "relation",
           "view_control",
+          "list_of_unit",
         ] as const) {
           counts[t] = db.entitiesOfType(t).length;
         }

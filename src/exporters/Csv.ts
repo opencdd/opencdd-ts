@@ -32,6 +32,7 @@ const TYPE_LABELS: Readonly<Record<EntityType, string>> = {
   unit: "UoM",
   relation: "RELATION",
   view_control: "VIEWCONTROL",
+  list_of_unit: "LIST_OF_UNIT",
 };
 
 const SHEET_ENTITY_ORDER: readonly EntityType[] = [

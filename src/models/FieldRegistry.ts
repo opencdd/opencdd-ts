@@ -171,6 +171,11 @@ const VIEW_CONTROL_FIELDS: FieldTable = [
   },
 ];
 
+// TS-ONLY: list_of_unit carries only common identifying fields in the
+// wild. If a future schema adds list-membership data (e.g.
+// `units_in_list`), add a FieldSpec here.
+const LIST_OF_UNIT_FIELDS: FieldTable = [];
+
 export const FIELDS: Readonly<Record<EntityType, readonly FieldSpec[]>> =
   Object.freeze({
     class: freezeList([...COMMON_FIELDS, ...CLASS_FIELDS]),
@@ -180,6 +185,7 @@ export const FIELDS: Readonly<Record<EntityType, readonly FieldSpec[]>> =
     value_term: freezeList([...COMMON_FIELDS, ...VALUE_TERM_FIELDS]),
     relation: freezeList([...COMMON_FIELDS, ...RELATION_FIELDS]),
     view_control: freezeList([...COMMON_FIELDS, ...VIEW_CONTROL_FIELDS]),
+    list_of_unit: freezeList([...COMMON_FIELDS, ...LIST_OF_UNIT_FIELDS]),
   });
 
 export function fieldFor(

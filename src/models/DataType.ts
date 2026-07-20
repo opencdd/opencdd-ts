@@ -87,7 +87,10 @@ export abstract class DataType {
     const s = raw.trim();
     if (!s) return null;
 
-    let m = s.match(/^CLASS_REFERENCE\s*\(\s*(.+?)\s*\)$/);
+    let m = s.match(/^CLASS_REFERENCE_TYPE\s*\(\s*(.+?)\s*\)$/);
+    if (m) return new ClassReference(m[1]);
+
+    m = s.match(/^CLASS_REFERENCE\s*\(\s*(.+?)\s*\)$/);
     if (m) return new ClassReference(m[1]);
 
     m = s.match(/^ENUM_STRING_TYPE\s*\(\s*(.+?)\s*\)$/);
@@ -107,7 +110,11 @@ export abstract class DataType {
         return new IntegerMeasureType();
       default:
         if (SIMPLE_TYPES.has(s)) return new SimpleDataType(s);
-        throw new ArgumentError(`unknown data_type: ${JSON.stringify(s)}`);
+        // Lenient fallback: treat unknown type strings (e.g.
+        // NON_TRANSLATABLE_STRING_TYPE) as simple types so parsing
+        // real-world IEC data doesn't throw. The string is preserved
+        // verbatim — round-trip is lossless, validators can flag it.
+        return new SimpleDataType(s);
     }
   }
 
