@@ -7,6 +7,7 @@ import { ValueList } from "./ValueList";
 import { ValueTerm } from "./ValueTerm";
 import { Relation } from "./Relation";
 import { ViewControl } from "./ViewControl";
+import { ListOfUnit } from "./ListOfUnit";
 import {
   MDC_C002,
   MDC_C003,
@@ -14,6 +15,7 @@ import {
   MDC_C009,
   MDC_C010,
   MDC_C011,
+  MDC_C013,
   EXT_C001,
 } from "./MetaClasses.generated";
 
@@ -32,6 +34,7 @@ export const ENTITY_CONSTRUCTORS: Readonly<Record<string, EntityConstructor>> =
     [MDC_C010]: ValueTerm,
     [MDC_C011]: Relation,
     [EXT_C001]: ViewControl,
+    [MDC_C013]: ListOfUnit,
   };
 
 export function entityConstructorFor(

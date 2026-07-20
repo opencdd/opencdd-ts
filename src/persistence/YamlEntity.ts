@@ -41,6 +41,7 @@ const TYPE_TO_META_CLASS: Readonly<Record<string, string>> = {
   value_term: "MDC_C010",
   relation: "MDC_C011",
   view_control: "EXT_C001",
+  list_of_unit: "MDC_C013",
 };
 
 const KIND_EXTRACTORS: Readonly<

@@ -29,6 +29,7 @@ import { ValueList } from "./ValueList";
 import { ValueTerm } from "./ValueTerm";
 import { Relation } from "./Relation";
 import { ViewControl } from "./ViewControl";
+import { ListOfUnit } from "./ListOfUnit";
 
 export class Visitor {
   constructor(protected readonly database: Database) {}
@@ -41,6 +42,7 @@ export class Visitor {
     this.visitValueTerms();
     this.visitRelations();
     this.visitViewControls();
+    this.visitListOfUnits();
   }
 
   visitClasses(): void {
@@ -85,4 +87,12 @@ export class Visitor {
   }
 
   visitViewControl(_vc: ViewControl): void {}
+
+  visitListOfUnits(): void {
+    for (const lou of this.database.entitiesOfType("list_of_unit")) {
+      this.visitListOfUnit(lou as ListOfUnit);
+    }
+  }
+
+  visitListOfUnit(_lou: ListOfUnit): void {}
 }

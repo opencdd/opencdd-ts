@@ -38,6 +38,7 @@ const TYPE_TO_META_CLASS: Readonly<Record<string, string>> = {
   value_term: "MDC_C010",
   relation: "MDC_C011",
   view_control: "EXT_C001",
+  list_of_unit: "MDC_C013",
 };
 
 export function databaseFromJson(json: string, base?: Database): Database {
@@ -61,9 +62,8 @@ export function databaseToJson(db: Database): string {
 function recordToEntity(rec: JsonObject): Entity {
   const type = String(rec.type ?? "class");
   const metaIrdi = TYPE_TO_META_CLASS[type] ?? "MDC_C002";
-  const ctor =
-    ENTITY_CONSTRUCTORS[type as keyof typeof ENTITY_CONSTRUCTORS] ??
-    ENTITY_CONSTRUCTORS.MDC_C002;
+  // ENTITY_CONSTRUCTORS is keyed by meta-class IRDI, not by type name.
+  const ctor = ENTITY_CONSTRUCTORS[metaIrdi] ?? ENTITY_CONSTRUCTORS.MDC_C002;
   const irdi =
     rec.irdi !== undefined && rec.irdi !== null
       ? IRDI.parse(String(rec.irdi))
