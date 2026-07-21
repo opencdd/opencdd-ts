@@ -17,7 +17,10 @@ export {
   SheetSchema,
   Sheet,
   Workbook,
+  WorkbookReader,
+  FlatDirReader,
   canonicalParcelId,
   type SheetDirectiveRow,
+  type ReadOptions,
 } from "./parcel/index";
 export * as Validators from "./validators/index";

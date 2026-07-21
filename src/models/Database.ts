@@ -39,6 +39,8 @@ import { databaseToYaml, databaseFromYaml } from "../persistence/YamlDatabase";
 import { saveToDirectory, loadFromDirectory } from "../persistence/EntityStore";
 import { databaseFromJson, databaseToJson } from "../persistence/JsonDatabase";
 import { DatabaseLinker } from "./DatabaseLinker";
+import { Workbook } from "../parcel/Workbook";
+import { ENTITY_CONSTRUCTORS } from "./entityConstructors";
 
 export interface UnresolvedReference {
   readonly ref: string | null;
@@ -54,6 +56,7 @@ export class Database {
   private finalized = false;
   readonly unresolvedRefs: UnresolvedReference[] = [];
   readonly aliasTable = new AliasTable(true);
+  readonly workbooks: Workbook[] = [];
 
   addEntity(entity: Entity): this {
     const irdi = entity.irdi;
@@ -437,6 +440,44 @@ export class Database {
 
   static fromJson(json: string): Database {
     return databaseFromJson(json);
+  }
+
+  /**
+   * Adds entities from a Parcel Workbook by iterating each Sheet and
+   * constructing an Entity per row via the sheet's meta-class IRDI.
+   * Idempotent — adding the same workbook twice is a no-op (rows
+   * produce identical entities that Database.addEntity deduplicates).
+   *
+   * Ported from Opencdd::Database#add_workbook.
+   */
+  addWorkbook(workbook: Workbook): this {
+    if (!this.workbooks.includes(workbook)) this.workbooks.push(workbook);
+    for (const sheet of workbook.sheets) {
+      // ENTITY_CONSTRUCTORS is keyed by meta-class CODE (e.g. "MDC_C002"),
+      // not the full IRDI. Use the metadata.code accessor.
+      const metaClassCode = sheet.metadata.metaClassCode;
+      if (!metaClassCode) continue;
+      const ctor = ENTITY_CONSTRUCTORS[metaClassCode];
+      if (!ctor) continue;
+      const codePid = codePropertyIdFor(metaClassCode);
+      for (const row of sheet.rows) {
+        const props: Record<string, unknown> = {};
+        let codeValue: string | undefined;
+        for (const [k, v] of Object.entries(row)) {
+          if (k === "__row_index__") continue;
+          if (v === null || v === undefined) continue;
+          const s = String(v).trim();
+          if (s.length === 0) continue;
+          props[k] = s;
+          if (codePid && k === codePid) codeValue = s;
+        }
+        const irdi = codeValue ? IRDI.parse(codeValue) : null;
+        const entity = new ctor(irdi, props, metaClassCode);
+        this.addEntity(entity);
+      }
+    }
+    this.finalized = false;
+    return this;
   }
 
   async saveToDirectory(path: string): Promise<void> {
