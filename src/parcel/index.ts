@@ -27,3 +27,8 @@ export {
   MANDATORY_HEADER_ROWS,
   parcelTypeLabelFor,
 } from "./Workbook";
+export {
+  WorkbookReader,
+  FlatDirReader,
+  type ReadOptions,
+} from "./WorkbookReader";
