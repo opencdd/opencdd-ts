@@ -25,7 +25,7 @@ const EXPECTED_COUNTS: Record<string, Record<string, number>> = {
     value_term: 114,
     relation: 7,
   },
-  "iec61360-7": { class: 57, property: 215, value_list: 48, value_term: 1823 },
+  "iec61360-7": { class: 57, property: 215, value_list: 49, value_term: 1997 },
   iec61360: { class: 574, property: 2018, value_list: 318, value_term: 1866 },
   iec62683: {
     class: 375,
@@ -41,7 +41,13 @@ const EXPECTED_COUNTS: Record<string, Record<string, number>> = {
     value_term: 86,
     relation: 4,
   },
-  iec61987: { class: 2704, property: 6471, value_list: 668, value_term: 3491 },
+  iec61987: {
+    class: 2704,
+    property: 6471,
+    value_list: 669,
+    value_term: 3496,
+    list_of_unit: 89,
+  },
   iec62720: { class: 1, unit: 2165, relation: 6, list_of_unit: 394 },
 };
 
