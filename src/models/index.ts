@@ -38,9 +38,12 @@ export {
 export { parseIrdiList, parseStringList, parseIntegerList } from "./helpers";
 export {
   Condition,
+  ConditionExpression,
+  ConditionClassReference,
   ConditionSyntaxError,
   type ConditionOperator,
   type ConditionRhs,
+  type ConditionType,
 } from "./Condition";
 export {
   PropertyDataTypeElement,

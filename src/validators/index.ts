@@ -2,9 +2,12 @@ export type { Rule, ValidationContext, ValidationError } from "./Rule";
 export { validationError } from "./Rule";
 export {
   Condition,
+  ConditionExpression,
+  ConditionClassReference,
   ConditionSyntaxError,
   type ConditionOperator,
   type ConditionRhs,
+  type ConditionType,
 } from "../models/Condition";
 export {
   runValidation,
