@@ -11,3 +11,6 @@ dist/
 npm-debug.log*
 yarn-debug.log*
 coverage/
+
+# TODO files are working notes, not artifacts.
+TODO*
