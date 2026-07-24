@@ -44,7 +44,7 @@ console.log(db.classes.size); // 1
 
 ## Codegen provenance
 
-`src/models/PropertyIds.generated.ts` and `src/models/MetaClasses.generated.ts` are **generated** by the Ruby `opencdd` gem's `rake generate_ts` task, which writes them into this repo via a git submodule of `cdd-data`. Do not hand-edit. See [`TODO.astro/02`](https://github.com/opencdd/opencdd.github.io/blob/main/TODO.astro/02-cdd-data-submodule-and-codegen.md) for the codegen contract.
+`src/models/PropertyIds.generated.ts` and `src/models/MetaClasses.generated.ts` are **generated** by the Ruby `opencdd` gem's `rake generate_ts` task, which writes them into this repo via a git submodule of `data-private`. Do not hand-edit. See the codegen contract documentation for the codegen contract.
 
 ## Versioning
 

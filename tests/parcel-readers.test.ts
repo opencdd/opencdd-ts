@@ -1,8 +1,8 @@
 /**
  * Validates Parcel Excel reading against real IEC CDD files in
- * cdd-data/data/<dict>/parcel/*.xlsx + reference-docs legacy .xls.
+ * data-private/data/<dict>/parcel/*.xlsx + reference-docs legacy .xls.
  *
- * Auto-skips when cdd-data isn't checked out (CI-friendly).
+ * Auto-skips when data-private isn't checked out (CI-friendly).
  */
 
 import { describe, expect, it } from "vitest";
@@ -12,8 +12,8 @@ import { dirname, resolve } from "node:path";
 import { Database, WorkbookReader, FlatDirReader } from "../src";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const CDD_DATA_DIR = resolve(here, "../../cdd-data/data");
-const REFERENCE_DOCS = resolve(here, "../../cdd-data/reference-docs");
+const CDD_DATA_DIR = resolve(here, "../../data-private/data");
+const REFERENCE_DOCS = resolve(here, "../../data-private/reference-docs");
 
 const RUN = existsSync(CDD_DATA_DIR);
 const describeIf = RUN ? describe : describe.skip;

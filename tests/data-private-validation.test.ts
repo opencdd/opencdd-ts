@@ -1,9 +1,9 @@
 /**
  * Validates every TODO.feat improvement against the real IEC CDD data
- * in ../cdd-data/data/. Skipped by default — set CDD_DATA_VALIDATE=1
+ * in ../data-private/data/. Skipped by default — set CDD_DATA_VALIDATE=1
  * to opt in. Slow on iec61987 (13K entities, several seconds).
  *
- *   CDD_DATA_VALIDATE=1 npx vitest run tests/cdd-data-validation.test.ts
+ *   CDD_DATA_VALIDATE=1 npx vitest run tests/data-private-validation.test.ts
  */
 
 import { describe, expect, it } from "vitest";
@@ -14,7 +14,7 @@ import { performance } from "node:perf_hooks";
 import { Database, Validators, Visitor, type EntityType } from "../src";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const CDD_DATA_DIR = resolve(here, "../../cdd-data/data");
+const CDD_DATA_DIR = resolve(here, "../../data-private/data");
 
 const EXPECTED_COUNTS: Record<string, Record<string, number>> = {
   oceanrunner: { class: 20, property: 19, value_list: 1 },
@@ -91,7 +91,7 @@ const dictionaries = RUN
     })
   : [];
 
-describeIf("cdd-data validation", () => {
+describeIf("data-private validation", () => {
   // Always-on smoke test: JSON round-trip on the small oceanrunner fixture
   // (no env-var gating). Confirms databaseToJson/databaseFromJson preserve
   // semantic equality.
