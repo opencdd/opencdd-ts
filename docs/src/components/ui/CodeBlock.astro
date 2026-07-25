@@ -1,0 +1,28 @@
+---
+import { cn } from "~/lib/cn";
+
+interface Props {
+  filename?: string;
+  lang?: string;
+  code: string;
+  class?: string;
+}
+
+const { filename, lang, code, class: className } = Astro.props;
+
+const language = lang ?? (filename ? filename.split(".").pop() ?? "" : "");
+---
+
+<figure class={cn("code-block", className)}>
+  {(filename || language) && (
+    <figcaption class="code-block__header">
+      {filename && (
+        <span class="code-block__filename">{filename}</span>
+      )}
+      {language && (
+        <span class="code-block__lang">{language}</span>
+      )}
+    </figcaption>
+  )}
+  <pre><code set:html={code}></code></pre>
+</figure>
