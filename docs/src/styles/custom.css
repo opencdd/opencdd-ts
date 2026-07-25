@@ -1,19 +1,337 @@
-/* Custom overrides for the opencdd docs site. Starlight provides
-   sensible defaults; this file adds small touches on top. */
+/* ───────────────────────────────────────────────────────────────
+   opencdd-ts docs — site-specific design extensions
+   ───────────────────────────────────────────────────────────
 
-:root {
-  --sl-color-accent: #0891b2;
-  --sl-color-accent-low: #155e75;
-  --sl-color-accent-high: #67e8f9;
+   Built on top of global.css (the shared OpenCDD design system).
+   These additions lean into the brand's central motif — the I Ching
+   hexagram ☱ (Dui / Lake): broken top line, two solid lines below.
+
+   The hexagram becomes a structural element:
+     - as section dividers (.hex-divider)
+     - as a "seal" mark on the page (.hex-seal)
+     - as decorative numbering for editorial sections
+
+   Combined with paper grain, staggered load motion, and a more
+   pronounced editorial typography rhythm, the site reads as a
+   research publication that takes itself seriously — warm but
+   precise. */
+
+/* ── Paper grain texture ─────────────────────────────────────── */
+/* Subtle multiplicative noise overlay. Fixed-position so it doesn't
+   scroll with content; pointer-events:none so it never blocks clicks.
+   Tinted warm to match the paper palette. */
+.paper-grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.32  0 0 0 0 0.28  0 0 0 0 0.20  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 
-/* Slightly tighter code blocks for our many Ruby/CDDAL samples. */
-.sl-markdown code,
-.sl-markdown pre {
-  font-size: 0.85em;
+/* ── Hexagram motif ──────────────────────────────────────────── */
+/* The brand mark. Three stacked bars: top is split (the broken line
+   of ☱), bottom two are solid. Used as dividers, seals, and list
+   bullets in editorial contexts. */
+
+.hex-divider {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 32px;
+  margin: 0;
+  border: 0;
+}
+.hex-divider::before,
+.hex-divider::after,
+.hex-divider > span {
+  content: "";
+  display: block;
+  height: 3px;
+  background: var(--color-ink-300);
+  border-radius: 1.5px;
+}
+.hex-divider::before {
+  background: linear-gradient(
+    to right,
+    var(--color-hex-400) 0 40%,
+    transparent 40% 60%,
+    var(--color-hex-400) 60% 100%
+  );
+}
+.hex-divider > span {
+  background: var(--color-ink-400);
+}
+.hex-divider::after {
+  background: var(--color-ink-400);
 }
 
-/* Logo + nav header polish */
-.starlight-logo {
+.hex-divider--center {
+  margin-inline: auto;
+  align-items: center;
+}
+.hex-divider--lg {
+  width: 56px;
+  gap: 6px;
+}
+.hex-divider--lg::before,
+.hex-divider--lg > span,
+.hex-divider--lg::after {
+  height: 4px;
+}
+
+/* Seal — full hexagram glyph in a circular stamp. Used as a
+   marginalia mark or section identifier. */
+.hex-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--color-paper-400);
+  background: var(--color-paper-50);
+  color: var(--color-hex-700);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1;
+  box-shadow:
+    0 0 0 4px var(--color-paper-100),
+    var(--shadow-sm);
+}
+
+/* ── Editorial numbering ─────────────────────────────────────── */
+/* A small caps ordinal used as a marginalia marker before
+   section headings. Reads like a journal article. */
+.editorial-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-hex-600);
+}
+.editorial-number::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* ── Staggered load motion ──────────────────────────────────── */
+/* Apply .stagger to a parent; children receive progressively
+   delayed fade-up. Animation runs once on page load. */
+@keyframes stagger-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger > * {
+  opacity: 0;
+  animation: stagger-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.15s; }
+.stagger > *:nth-child(3) { animation-delay: 0.25s; }
+.stagger > *:nth-child(4) { animation-delay: 0.35s; }
+.stagger > *:nth-child(5) { animation-delay: 0.45s; }
+.stagger > *:nth-child(6) { animation-delay: 0.55s; }
+.stagger > *:nth-child(7) { animation-delay: 0.65s; }
+.stagger > *:nth-child(8) { animation-delay: 0.75s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger > * {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ── Refined card hover ──────────────────────────────────────── */
+.card-link {
+  position: relative;
+  display: block;
+  height: 100%;
+}
+.card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 0 0 var(--color-hex-300);
+  transition: box-shadow 0.25s ease;
+}
+.card-link:hover::after {
+  box-shadow: 0 0 0 2px var(--color-hex-300);
+}
+
+/* ── Editorial code block ────────────────────────────────────── */
+.code-block {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--color-paper-400);
+  background: var(--color-ink-900);
+  box-shadow: var(--shadow-md);
+}
+.code-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.875rem;
+  background: var(--color-ink-800);
+  border-bottom: 1px solid var(--color-ink-700);
+  color: var(--color-ink-300);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.code-block__filename {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.code-block__filename::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--color-hex-400);
+  box-shadow: 0 0 0 2px rgba(244, 176, 58, 0.18);
+}
+.code-block__lang {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.6875rem;
+  color: var(--color-ink-400);
+}
+.code-block pre {
+  margin: 0;
+  background: transparent;
+  padding: 1.125rem 1.25rem;
+  border-radius: 0;
+}
+
+/* ── Prose refinements ───────────────────────────────────────── */
+.prose-opencdd > h1 + p::first-letter,
+.prose-opencdd > h1 + p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  font-size: 3.5em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.1em 0.12em 0 0;
+  color: var(--color-hex-600);
+  font-weight: 500;
+}
+
+.prose-opencdd blockquote.hex-pull {
+  border: 0;
+  margin: 2.5em 0;
+  padding: 0;
+  font-style: normal;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  line-height: 1.4;
+  color: var(--color-ink-800);
+  text-align: left;
+  position: relative;
+}
+.prose-opencdd blockquote.hex-pull::before {
+  content: "☱";
+  display: block;
+  font-size: 1.5rem;
+  color: var(--color-hex-500);
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+/* ── Marginalia / side notes ────────────────────────────────── */
+.hex-note {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.05em 0.5em;
   border-radius: 4px;
+  background: var(--color-paper-200);
+  color: var(--color-ink-700);
+  font-size: 0.85em;
+  font-family: var(--font-mono);
+}
+.hex-note::before {
+  content: "☱";
+  color: var(--color-hex-600);
+  font-family: var(--font-display);
+}
+
+/* ── Subtle background atmosphere for hero regions ──────────── */
+.hero-atmosphere {
+  position: relative;
+  isolation: isolate;
+}
+.hero-atmosphere::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto -10%;
+  height: 70%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 50% 60% at 80% 20%,
+      rgb(244 176 58 / 0.08),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 50% at 15% 30%,
+      rgb(37 162 203 / 0.07),
+      transparent 70%
+    );
+  filter: blur(2px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero-atmosphere::before {
+    background:
+      radial-gradient(
+        ellipse 50% 60% at 80% 20%,
+        rgb(240 139 54 / 0.12),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 40% 50% at 15% 30%,
+        rgb(56 195 211 / 0.10),
+        transparent 70%
+      );
+  }
+}
+:root[data-theme="dark"] .hero-atmosphere::before {
+  background:
+    radial-gradient(
+      ellipse 50% 60% at 80% 20%,
+      rgb(240 139 54 / 0.12),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 40% 50% at 15% 30%,
+      rgb(56 195 211 / 0.10),
+      transparent 70%
+    );
+}
+
+/* ── Inline mark/highlight ───────────────────────────────────── */
+.mark-hex {
+  background: linear-gradient(
+    to top,
+    var(--color-hex-200) 0 35%,
+    transparent 35% 100%
+  );
+  padding: 0 0.1em;
 }

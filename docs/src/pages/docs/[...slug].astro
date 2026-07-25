@@ -30,28 +30,32 @@ const docsNav = docs
   description={entry.data.description}
   docsNav={docsNav}
 >
-  <header class="mb-8">
-    <p class="mb-2 text-xs font-medium uppercase tracking-wide text-ink-500">
-      {entry.data.section}
-    </p>
-    <h1 class="font-display text-4xl tracking-tight text-ink-900">
+  <header class="mb-12 stagger">
+    <div class="flex items-center gap-3">
+      <span class="hex-seal" aria-hidden="true">☱</span>
+      <p class="editorial-number">{entry.data.section}</p>
+    </div>
+    <h1 class="mt-6 font-display text-[2.5rem] leading-[1.08] tracking-[-0.025em] text-ink-900 sm:text-5xl">
       {entry.data.title}
     </h1>
     {entry.data.description && (
-      <p class="mt-3 text-lg text-ink-600">{entry.data.description}</p>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-ink-600">
+        {entry.data.description}
+      </p>
     )}
   </header>
 
   <Content />
 
-  <footer class="mt-16 border-t border-paper-300 pt-6 text-sm text-ink-500">
+  <footer class="mt-20 border-t border-paper-300 pt-6 text-sm text-ink-500">
     <a
       href={`https://github.com/opencdd/opencdd-ts/edit/main/docs/src/content/docs/${entry.id.replace(/^.*\//, "")}`}
       target="_blank"
       rel="noreferrer noopener"
-      class="text-hex-700 hover:text-hex-600"
+      class="inline-flex items-center gap-2 text-hex-700 underline decoration-hex-300 underline-offset-2 hover:text-hex-600"
     >
-      Edit this page on GitHub →
+      Edit this page on GitHub
+      <span aria-hidden="true">→</span>
     </a>
   </footer>
 </DocsLayout>
