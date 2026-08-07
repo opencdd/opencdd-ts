@@ -175,3 +175,40 @@ export function isRelationNode(node: EntityNode): node is RelationNode {
 export function isViewControlNode(node: EntityNode): node is ViewControlNode {
   return node.type === "view_control";
 }
+
+/* ── Property metadata wire shapes ──────────────────────────────
+   The Ruby gem exports `_properties.json` and `_meta_classes.json`
+   alongside `database.json`. These describe how to label and render
+   every property code (MDC_P###, C###) and which properties apply
+   to each meta-class. They are the data-driven counterpart to the
+   hard-coded typed accessors on UnitNode / ClassNode etc.: those
+   stay as sugar, while `raw_properties` on every entity carries
+   the values and these tables carry the metadata. */
+
+export interface PropertyMetadata {
+  /** Human-readable name, e.g. "UN/ECE code". */
+  name: string;
+  /** IEC 61360 data type, e.g. "STRING_TYPE", "TRANSLATABLE_STRING_TYPE". */
+  datatype?: string;
+  /** Whether the property has per-language variants (.en, .de, etc.). */
+  multilingual?: boolean;
+  /** Value format hint, e.g. "M..255". */
+  valueFormat?: string;
+}
+
+/** Lookup table: property code → metadata. Matches the shape of
+ *  `_properties.json` exported by the Ruby gem. */
+export type PropertyMetadataMap = Record<string, PropertyMetadata>;
+
+export interface MetaClassDefinition {
+  /** Meta-class code, e.g. "MDC_C009". */
+  code: string;
+  /** Human-readable name, e.g. "Unit". */
+  name: string;
+  /** Property IDs that apply to entities of this meta-class. */
+  propertyIds: string[];
+}
+
+/** Lookup table: meta-class code → definition. Matches the shape of
+ *  `_meta_classes.json` exported by the Ruby gem. */
+export type MetaClassDefinitionMap = Record<string, MetaClassDefinition>;
