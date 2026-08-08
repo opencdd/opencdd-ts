@@ -14,7 +14,9 @@ export type EntityType =
   // units"). The Ruby gem's MetaClasses registry doesn't define a
   // meta-class for it yet — when it does, regenerate this file and
   // remove the entries marked `// TS-ONLY` below.
-  | "list_of_unit";
+  | "list_of_unit"
+  // Synced from Ruby commit ccf14ce — DET classification entity type.
+  | "det_classification";
 
 export interface MetaClassEntry {
   readonly irdi: string;
@@ -474,16 +476,44 @@ export const REGISTRY: Readonly<Record<string, MetaClassEntry>> = {
       "EXT_P003",
     ],
   },
-  // TS-ONLY: provisional entry for IEC 62720 list_of_unit. Code property
-  // borrows the Unit code (MDC_P001_10) — list_of_unit records in the
-  // wild carry only the common identifying fields (irdi, code,
-  // preferred_name). Replace with the real meta-class IRDI once the
-  // Ruby gem registers one.
-  MDC_C013: {
-    irdi: "MDC_C013",
+  // Synced from Ruby commit ccf14ce — ListOfUnit meta-class IRDI is
+  // MDC_C0100 in the canonical Ruby REGISTRY (lib/opencdd/meta_class.rb).
+  // Earlier TS builds guessed MDC_C013; that value never matched real
+  // list_of_unit entities in the wild.
+  MDC_C0100: {
+    irdi: "MDC_C0100",
     name: "ListOfUnit",
     entityType: "list_of_unit",
     codePropertyId: "MDC_P001_10",
+    allowedPropertyIds: [
+      "MDC_P001",
+      "MDC_P001_10",
+      "EXT_P001",
+      "MDC_P002_1",
+      "MDC_P002_2",
+      "MDC_P003_1",
+      "MDC_P003_2",
+      "MDC_P003_3",
+      "MDC_P004",
+      "MDC_P005",
+      "MDC_P006",
+      "MDC_P008",
+      "MDC_P009",
+      "MDC_P112",
+      "MDC_P113",
+      "MDC_P066",
+      "MDC_P067",
+    ],
+  },
+  // Synced from Ruby commit ccf14ce — DetClassification meta-class.
+  // cdd.iec.ch's search-export uses CLASS_ID:=IECCDD_001 (an IEC-internal
+  // supplier scheme), but MDC_C0101 is the canonical meta-class IRDI.
+  // Code property is MDC_P001_5 (the aliased code column IDs).
+  MDC_C0101: {
+    irdi: "MDC_C0101",
+    name: "DetClassification",
+    entityType: "det_classification",
+    codePropertyId: "MDC_P001_5",
     allowedPropertyIds: [
       "MDC_P001",
       "MDC_P001_10",
@@ -513,8 +543,10 @@ export const MDC_C011 = "MDC_C011";
 export const MDC_C009 = "MDC_C009";
 export const MDC_C010 = "MDC_C010";
 export const EXT_C001 = "EXT_C001";
-// TS-ONLY: provisional meta-class for list_of_unit.
-export const MDC_C013 = "MDC_C013";
+// Synced from Ruby commit ccf14ce — was MDC_C013 (TS-only guess).
+export const MDC_C0100 = "MDC_C0100";
+// Synced from Ruby commit ccf14ce — DetClassification meta-class.
+export const MDC_C0101 = "MDC_C0101";
 
 export function entry(irdi: string): MetaClassEntry | undefined {
   return REGISTRY[irdi];

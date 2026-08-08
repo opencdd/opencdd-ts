@@ -30,6 +30,7 @@ import { ValueTerm } from "./ValueTerm";
 import { Relation } from "./Relation";
 import { ViewControl } from "./ViewControl";
 import { ListOfUnit } from "./ListOfUnit";
+import { DetClassification } from "./DetClassification";
 
 export class Visitor {
   constructor(protected readonly database: Database) {}
@@ -43,6 +44,7 @@ export class Visitor {
     this.visitRelations();
     this.visitViewControls();
     this.visitListOfUnits();
+    this.visitDetClassifications();
   }
 
   visitClasses(): void {
@@ -95,4 +97,12 @@ export class Visitor {
   }
 
   visitListOfUnit(_lou: ListOfUnit): void {}
+
+  visitDetClassifications(): void {
+    for (const det of this.database.detClassifications()) {
+      this.visitDetClassification(det);
+    }
+  }
+
+  visitDetClassification(_det: DetClassification): void {}
 }
