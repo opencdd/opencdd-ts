@@ -18,6 +18,7 @@ export { ValueTerm } from "./ValueTerm";
 export { Relation } from "./Relation";
 export { Visitor } from "./Visitor";
 export { ListOfUnit } from "./ListOfUnit";
+export { DetClassification } from "./DetClassification";
 export { ViewControl } from "./ViewControl";
 export {
   DataType,

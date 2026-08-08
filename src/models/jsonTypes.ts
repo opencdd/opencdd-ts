@@ -15,7 +15,9 @@ export type EntityType =
   | "value_list"
   | "value_term"
   | "relation"
-  | "view_control";
+  | "view_control"
+  | "list_of_unit"
+  | "det_classification";
 
 export interface Synonym {
   lang: string | null;
@@ -139,6 +141,14 @@ export interface ViewControlNode extends BaseNode {
   shown_properties?: string[];
 }
 
+export interface ListOfUnitNode extends BaseNode {
+  type: "list_of_unit";
+}
+
+export interface DetClassificationNode extends BaseNode {
+  type: "det_classification";
+}
+
 export type EntityNode =
   | ClassNode
   | PropertyNode
@@ -146,7 +156,9 @@ export type EntityNode =
   | ValueListNode
   | ValueTermNode
   | RelationNode
-  | ViewControlNode;
+  | ViewControlNode
+  | ListOfUnitNode
+  | DetClassificationNode;
 
 export function isClassNode(node: EntityNode): node is ClassNode {
   return node.type === "class";
@@ -174,6 +186,16 @@ export function isRelationNode(node: EntityNode): node is RelationNode {
 
 export function isViewControlNode(node: EntityNode): node is ViewControlNode {
   return node.type === "view_control";
+}
+
+export function isListOfUnitNode(node: EntityNode): node is ListOfUnitNode {
+  return node.type === "list_of_unit";
+}
+
+export function isDetClassificationNode(
+  node: EntityNode,
+): node is DetClassificationNode {
+  return node.type === "det_classification";
 }
 
 /* ── Property metadata wire shapes ──────────────────────────────

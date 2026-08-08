@@ -176,6 +176,9 @@ const VIEW_CONTROL_FIELDS: FieldTable = [
 // `units_in_list`), add a FieldSpec here.
 const LIST_OF_UNIT_FIELDS: FieldTable = [];
 
+// DetClassification carries only common identifying fields.
+const DET_CLASSIFICATION_FIELDS: FieldTable = [];
+
 export const FIELDS: Readonly<Record<EntityType, readonly FieldSpec[]>> =
   Object.freeze({
     class: freezeList([...COMMON_FIELDS, ...CLASS_FIELDS]),
@@ -186,6 +189,10 @@ export const FIELDS: Readonly<Record<EntityType, readonly FieldSpec[]>> =
     relation: freezeList([...COMMON_FIELDS, ...RELATION_FIELDS]),
     view_control: freezeList([...COMMON_FIELDS, ...VIEW_CONTROL_FIELDS]),
     list_of_unit: freezeList([...COMMON_FIELDS, ...LIST_OF_UNIT_FIELDS]),
+    det_classification: freezeList([
+      ...COMMON_FIELDS,
+      ...DET_CLASSIFICATION_FIELDS,
+    ]),
   });
 
 export function fieldFor(

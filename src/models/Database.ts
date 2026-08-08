@@ -23,6 +23,8 @@ import { ValueList } from "./ValueList";
 import { ValueTerm } from "./ValueTerm";
 import { ViewControl } from "./ViewControl";
 import { Relation } from "./Relation";
+import { ListOfUnit } from "./ListOfUnit";
+import { DetClassification } from "./DetClassification";
 import { AliasTable } from "./AliasTable";
 import { REGISTRY } from "./PropertyIds.generated";
 import * as Pids from "./PropertyIds.generated";
@@ -276,6 +278,14 @@ export class Database {
 
   viewControls(): ViewControl[] {
     return (this.entitiesByType.get("view_control") ?? []) as ViewControl[];
+  }
+
+  listOfUnits(): ListOfUnit[] {
+    return (this.entitiesByType.get("list_of_unit") ?? []) as ListOfUnit[];
+  }
+
+  detClassifications(): DetClassification[] {
+    return (this.entitiesByType.get("det_classification") ?? []) as DetClassification[];
   }
 
   entitiesOfType(type: EntityType | string): Entity[] {
