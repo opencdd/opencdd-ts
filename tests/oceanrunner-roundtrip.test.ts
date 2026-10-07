@@ -18,8 +18,8 @@ describe("oceanrunner.cddal round-trip", () => {
 
   it("resolves symbolic names in superclass references", () => {
     const db = Cddal.parse(source);
-    const vehicle = db.findByCode("AAA001");
-    const boat = db.findByCode("AAA010");
+    const vehicle = db.findByCode("ORA001");
+    const boat = db.findByCode("ORA010");
     expect(boat).not.toBeNull();
     expect(vehicle).not.toBeNull();
     expect(

@@ -32,16 +32,16 @@ describe("YAML database persistence", () => {
 source_language: en
 translation_languages: []
 entities:
-  - irdi: 0112/2///61360_4#AAA001
+  - irdi: 0112/2///OCEANRUNNER#ORA001
     type: class
-    code: AAA001
+    code: ORA001
     preferred_name:
       en: Vehicle
       fr: Véhicule
     class_type: ITEM_CLASS
 `;
     const db = Database.fromYaml(yaml);
-    const vehicle = db.findByCode("AAA001");
+    const vehicle = db.findByCode("ORA001");
     expect(vehicle).not.toBeNull();
     expect(vehicle?.preferredName("en")).toBe("Vehicle");
     expect(vehicle?.preferredName("fr")).toBe("Véhicule");
@@ -52,15 +52,15 @@ entities:
 source_language: en
 translation_languages: []
 entities:
-  - irdi: 0112/2///61360_4#AAA001
+  - irdi: 0112/2///OCEANRUNNER#ORA001
     type: class
-    code: AAA001
+    code: ORA001
     applicable_properties:
-      - 0112/2///61360_4#AAAP001
-      - 0112/2///61360_4#AAAP002
+      - 0112/2///61360_4#ORB001
+      - 0112/2///61360_4#ORB002
 `;
     const db = Database.fromYaml(yaml);
-    const klass = db.findByCode("AAA001");
+    const klass = db.findByCode("ORA001");
     expect(klass).not.toBeNull();
     const out = db.toYaml();
     expect(out).toContain("applicable_properties:");
@@ -90,9 +90,9 @@ describe("per-entity YAML directory store", () => {
     await db1.saveToDirectory(tmpDir);
     const { readdir } = await import("node:fs/promises");
     const shards = await readdir(`${tmpDir}/entities`);
-    expect(shards).toContain("AA");
-    const files = await readdir(`${tmpDir}/entities/AA`);
-    const aaa001 = files.find((f) => f.startsWith("AAA001"));
-    expect(aaa001).toBeDefined();
+    expect(shards).toContain("OR");
+    const files = await readdir(`${tmpDir}/entities/OR`);
+    const ora001 = files.find((f) => f.startsWith("ORA001"));
+    expect(ora001).toBeDefined();
   });
 });

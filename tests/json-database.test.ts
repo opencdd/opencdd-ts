@@ -32,7 +32,7 @@ describe("JSON database pipeline", () => {
 
   it("preserves multilingual fields via raw_properties", () => {
     const db = Database.fromJson(json);
-    const vehicle = db.findByCode("AAA001");
+    const vehicle = db.findByCode("ORA001");
     expect(vehicle).not.toBeNull();
     expect(vehicle?.preferredName("en")).toBe("Vehicle");
   });
