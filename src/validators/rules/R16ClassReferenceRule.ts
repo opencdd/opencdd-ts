@@ -11,7 +11,7 @@
  * powertype semantics.
  *
  * Example: `engine_type: CLASS_REFERENCE(EngineType)` with value
- * "AAA001" (Vehicle) should fail — Vehicle is not a categorical
+ * "ORA001" (Vehicle) should fail — Vehicle is not a categorical
  * instance of EngineType.
  *
  * Skipped automatically when no database is supplied (no way to

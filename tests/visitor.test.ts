@@ -66,7 +66,7 @@ describe("Visitor", () => {
     const db = Cddal.parse(source);
     const v = new CollectingVisitor(db);
     v.visit();
-    expect(v.classNames).toContain("AAA001");
+    expect(v.classNames).toContain("ORA001");
   });
 
   it("default visit() is a no-op when no hooks overridden", () => {

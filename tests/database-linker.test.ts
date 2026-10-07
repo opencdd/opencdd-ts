@@ -21,7 +21,7 @@ describe("DatabaseLinker", () => {
 
   it("populates the class hierarchy on a fresh database", () => {
     const db = Cddal.parse(source);
-    const boat = db.findByCode("AAA010");
+    const boat = db.findByCode("ORA010");
     expect(boat).toBeInstanceOf(Klass);
     if (boat instanceof Klass) {
       expect(boat.parentIrdi).not.toBeNull();

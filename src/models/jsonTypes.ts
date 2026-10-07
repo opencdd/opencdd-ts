@@ -93,6 +93,8 @@ export interface PropertyNode extends BaseNode {
   type: "property";
   data_type?: string;
   unit?: string;
+  /** Display name for the unit when `unit` holds a cross-dictionary IRDI. */
+  unit_text?: string;
   definition_class?: string;
   value_format?: string;
   symbol?: string;

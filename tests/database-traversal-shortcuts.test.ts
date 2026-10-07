@@ -23,7 +23,7 @@ describe("Database traversal shortcuts", () => {
     const db = Cddal.parse(source);
     const ep = db.effectiveProperties();
     expect(ep).toBeDefined();
-    const vehicle = db.findByCode("AAA001");
+    const vehicle = db.findByCode("ORA001");
     if (vehicle instanceof Klass) {
       const props = ep.for(vehicle);
       expect(props).toBeDefined();
@@ -32,7 +32,7 @@ describe("Database traversal shortcuts", () => {
 
   it("builds a composition tree for a class", () => {
     const db = Cddal.parse(source);
-    const vehicle = db.findByCode("AAA001");
+    const vehicle = db.findByCode("ORA001");
     if (vehicle instanceof Klass) {
       const tree = db.compositionTree(vehicle);
       expect(tree === null || typeof tree === "object").toBe(true);
