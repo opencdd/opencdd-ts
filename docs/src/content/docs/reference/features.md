@@ -78,8 +78,7 @@ These are tracked in the issue tracker:
 
 - **Per-item YAML directory support** — Ruby's per-item YAML layout
   is not yet readable from TS. The JSON contract (`database.json`)
-  is currently the only persistence format. (See TODO.astro/00 in
-  the browser repo for the migration plan.)
+  is currently the only persistence format.
 - **xlsx writing** — TS does not write xlsx files. Use the Ruby gem.
 - **Parcel sheet directives** — partially supported; some advanced
   directives (sheet-level metadata blocks) are not yet parsed.
