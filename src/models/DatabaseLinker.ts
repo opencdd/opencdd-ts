@@ -2,7 +2,7 @@
  * DatabaseLinker — owns the four graph-invariant passes that run
  * during `Database.finalize()`.
  *
- * Extracted from Database (TODO.feat/10). Database is the storage
+ * Extracted from Database. Database is the storage
  * layer; DatabaseLinker is the linker. The split keeps Database.ts
  * focused on lookup + storage and gives the linking logic a single
  * home that's easier to test and reason about.

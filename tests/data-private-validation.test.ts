@@ -1,5 +1,5 @@
 /**
- * Validates every TODO.feat improvement against the real IEC CDD data
+ * Validates the TS model against the real IEC CDD data
  * in ../data-private/data/. Skipped by default — set CDD_DATA_VALIDATE=1
  * to opt in. Slow on iec61987 (13K entities, several seconds).
  *

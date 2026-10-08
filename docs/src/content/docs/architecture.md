@@ -106,6 +106,4 @@ via the cdd-data submodule. Never hand-edit.
 - OpenCDD Editor (forthcoming) — will consume this package for its
   model layer.
 
-See the
-[multi-repo architecture doc](https://github.com/opencdd/opencdd.github.io/blob/main/TODO.astro/00-architecture-and-decisions.md)
-for the full picture.
+See the browser repository README for the full picture.

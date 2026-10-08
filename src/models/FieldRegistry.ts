@@ -6,7 +6,7 @@
  * subclass hardcodes the mapping in its own getters; adding a new
  * field means finding every place that references the wire ID.
  *
- * Ported from Ruby's Entity::FieldRegistry concept (TODO.impl/26).
+ * Ported from the Ruby gem's Entity::FieldRegistry concept.
  *
  * Consumers:
  *   - Entity.field(name, lang) — generic typed reader
