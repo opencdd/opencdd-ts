@@ -11,44 +11,56 @@ import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { performance } from "node:perf_hooks";
-import { Database, Validators, Visitor, type EntityType } from "../src";
+import { Database, Validators, Visitor, Klass, ValueList, type EntityType } from "../src";
+import { IRDI } from "../src/models/IRDI";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const CDD_DATA_DIR = resolve(here, "../../data-private/data");
 
 const EXPECTED_COUNTS: Record<string, Record<string, number>> = {
-  oceanrunner: { class: 20, property: 19, value_list: 1 },
-  iec63213: {
+  oceanrunner: { class: 20, property: 38, value_list: 4 },
+  "iec-63213": {
     class: 26,
     property: 67,
-    value_list: 10,
-    value_term: 114,
-    relation: 7,
+    value_list: 11,
+    value_term: 116,
   },
-  "iec61360-7": { class: 57, property: 215, value_list: 49, value_term: 1997 },
-  iec61360: { class: 574, property: 2018, value_list: 318, value_term: 1866 },
-  iec62683: {
+  "iec-61360-4": {
+    class: 570,
+    property: 2008,
+    value_list: 324,
+    value_term: 1892,
+    det_classification: 163,
+  },
+  "iec-61360-7": {
+    class: 57,
+    property: 215,
+    value_list: 53,
+    value_term: 2015,
+  },
+  iec61360: { class: 574, property: 2018, value_list: 33, value_term: 1866 },
+  "iec-62683": {
     class: 375,
     property: 765,
     value_list: 139,
     value_term: 582,
-    relation: 10,
+    det_classification: 171,
   },
-  iec63508: {
+  "iec-63508": {
     class: 23,
     property: 33,
     value_list: 9,
     value_term: 86,
-    relation: 4,
   },
-  iec61987: {
+  "iec-61987": {
     class: 2704,
     property: 6471,
-    value_list: 669,
-    value_term: 3496,
-    list_of_unit: 89,
+    value_term: 3502,
+    list_of_unit: 112,
+    det_classification: 171,
   },
-  iec62720: { class: 1, unit: 2165, relation: 6, list_of_unit: 394 },
+  "iec-62720": { unit: 2165, list_of_unit: 394 },
+  "iso-ics": { class: 1383 },
 };
 
 const RUN = existsSync(CDD_DATA_DIR);
@@ -80,6 +92,9 @@ class CountingVisitor extends Visitor {
   visitListOfUnit() {
     this.counts.list_of_unit = (this.counts.list_of_unit ?? 0) + 1;
   }
+  visitDetClassification() {
+    this.counts.det_classification = (this.counts.det_classification ?? 0) + 1;
+  }
 }
 
 const dictionaries = RUN
@@ -108,6 +123,35 @@ describeIf("data-private validation", () => {
     });
   });
 
+  // Always-on YAML fidelity regression: the YAML layer must reproduce
+  // set_of_refs wire strings byte-for-byte. Real IEC data carries stray
+  // inner spaces ("{A,STAYPUT ,B}") and present-but-empty sets ("()") —
+  // both were silently rewritten by the previous split/rejoin pair.
+  describe("YAML set_of_refs fidelity", () => {
+    it("preserves inner whitespace and present-but-empty sets", () => {
+      const db = new Database();
+      db.addEntity(
+        new ValueList(IRDI.parse("0112/2///test#CEA000"), {
+          MDC_P044: "{()}",
+          MDC_P043: "()",
+        }, "MDC_C005"),
+      );
+      db.addEntity(
+        new ValueList(IRDI.parse("0112/2///test#CEB001"), {
+          MDC_P044: "{SPGRET,LATCH,STAYPUT ,SPGRET_CENTER}",
+        }, "MDC_C005"),
+      );
+      db.finalize();
+      const db2 = Database.fromYaml(db.toYaml());
+      expect(db2.find("0112/2///test#CEA000")?.properties.get("MDC_P043")).toBe("{}");
+      expect(db2.find("0112/2///test#CEA000")?.properties.get("MDC_P044")).toBe("{()}");
+      expect(db2.find("0112/2///test#CEB001")?.properties.get("MDC_P044")).toBe(
+        "{SPGRET,LATCH,STAYPUT ,SPGRET_CENTER}",
+      );
+      expect(db.semanticallyEquals(db2)).toBe(true);
+    });
+  });
+
   for (const dict of dictionaries.sort()) {
     describe(dict, () => {
       const jsonPath = resolve(CDD_DATA_DIR, dict, "database.json");
@@ -127,6 +171,7 @@ describeIf("data-private validation", () => {
           "relation",
           "view_control",
           "list_of_unit",
+          "det_classification",
         ] as const) {
           counts[t] = db.entitiesOfType(t).length;
         }
@@ -178,7 +223,7 @@ describeIf("data-private validation", () => {
       (total <= 250 ? it : it.skip)(
         "YAML round-trip preserves semantic equality",
         () => {
-          const db = Database.fromJson(json);
+          const db = Database.fromJson(json).finalize();
           const yaml = db.toYaml();
           const db2 = Database.fromYaml(yaml);
           expect(db.semanticallyEquals(db2)).toBe(true);

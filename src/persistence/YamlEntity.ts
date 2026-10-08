@@ -23,7 +23,6 @@ import {
   type FieldSpec,
   type FieldValueKind,
 } from "../models/FieldRegistry";
-import { unwrapAndSplit, rejoin } from "../models/StructuredValues";
 import type { EntityType } from "../models/MetaClasses.generated";
 
 export interface YamlEntityData {
@@ -96,7 +95,13 @@ export function yamlEntityFromEntity(entity: Entity): YamlEntityData {
     if (
       value !== undefined &&
       value !== null &&
-      !(Array.isArray(value) && value.length === 0) &&
+      // Empty arrays are meaningful for set_of_refs (present-but-empty
+      // set); for every other kind they carry nothing.
+      !(
+        Array.isArray(value) &&
+        value.length === 0 &&
+        spec.valueKind !== "set_of_refs"
+      ) &&
       !(
         typeof value === "object" &&
         !Array.isArray(value) &&
@@ -174,11 +179,50 @@ function extractMl(
 function extractSetOfRefs(
   entity: Entity,
   spec: FieldSpec,
-): string[] | undefined {
-  const raw = entity.get<unknown>(spec.propertyId);
+): string[] | string | undefined {
+  // Read the raw wire string, not entity.get() — the field reader
+  // coerces set_of_refs to an already-parsed array, which erases the
+  // inner whitespace this extractor exists to preserve.
+  const raw = entity.properties.get(spec.propertyId);
   if (raw === undefined || raw === null) return undefined;
-  const elements = unwrapAndSplit(raw);
-  return elements.length > 0 ? elements : undefined;
+  const rawStr = String(raw);
+  if (rawStr.trim() === "") return undefined;
+  // Lossless split: element whitespace is preserved so that
+  // populateSetOfRefs reproduces the source wire string byte-for-byte
+  // (IEC data carries stray inner spaces, e.g. "{A,STAYPUT ,B}" —
+  // trim here and the round-trip silently rewrites IEC data).
+  const elements = splitTopLevelLossless(rawStr);
+  // Present-but-empty sets ("()", "{}") carry meaning in the wire
+  // data; emit an empty array (a bare "{}"/"()" scalar would be
+  // reparsed as a YAML flow collection). finalize() canonicalizes the
+  // restored parens form, so both sides converge.
+  if (elements.length === 0) return [];
+  return elements;
+}
+
+function splitTopLevelLossless(value: string): string[] {
+  let s = value.trim();
+  if (
+    (s.startsWith("{") && s.endsWith("}")) ||
+    (s.startsWith("(") && s.endsWith(")"))
+  ) {
+    s = s.slice(1, -1);
+  }
+  const out: string[] = [];
+  let current = "";
+  let depth = 0;
+  for (const ch of s) {
+    if (ch === "{" || ch === "(") depth += 1;
+    if (ch === "}" || ch === ")") depth -= 1;
+    if (ch === "," && depth === 0) {
+      out.push(current);
+      current = "";
+    } else {
+      current += ch;
+    }
+  }
+  if (current.length > 0 || out.length > 0) out.push(current);
+  return out;
 }
 
 function populateRawString(
@@ -214,8 +258,16 @@ function populateSetOfRefs(
   spec: FieldSpec,
   value: unknown,
 ): void {
-  if (!Array.isArray(value) || value.length === 0) return;
-  props[spec.propertyId] = rejoin(value);
+  // Quoted raw literal (interop with hand-written YAML).
+  if (typeof value === "string") {
+    props[spec.propertyId] = value;
+    return;
+  }
+  if (!Array.isArray(value)) return;
+  // Empty array = present-but-empty set; finalize() canonicalizes the
+  // parens form to braces, matching the linker's normalization.
+  props[spec.propertyId] =
+    value.length === 0 ? "()" : "{" + value.map(String).join(",") + "}";
 }
 
 const KNOWN_WIRE_BASES_BY_TYPE: Readonly<
